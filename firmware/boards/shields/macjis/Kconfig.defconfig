@@ -1,0 +1,6 @@
+if SHIELD_MACJIS
+
+config ZMK_KEYBOARD_NAME
+    default "macjis"
+
+endif

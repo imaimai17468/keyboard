@@ -1,0 +1,161 @@
+/* scripts/gen_zmk.py で生成。直接編集しない */
+
+#include <dt-bindings/zmk/matrix_transform.h>
+#include <physical_layouts.dtsi>
+
+/ {
+    chosen {
+        zmk,kscan = &kscan0;
+        zmk,physical-layout = &macjis_layout;
+    };
+
+    kscan0: kscan {
+        compatible = "zmk,kscan-gpio-matrix";
+        wakeup-source;
+        diode-direction = "col2row";
+
+        row-gpios
+            = <&gpio0 2 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>  /* ROW0 = D0 */
+            , <&gpio0 3 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>  /* ROW1 = D1 */
+            , <&gpio0 28 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>  /* ROW2 = D2 */
+            , <&gpio0 29 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>  /* ROW3 = D3 */
+            , <&gpio0 4 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>  /* ROW4 = D4 */
+            , <&gpio0 5 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>  /* ROW5 = D5 */
+            , <&gpio1 11 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>  /* ROW6 = D6 */
+            , <&gpio0 15 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>  /* ROW7 = D11 */
+            , <&gpio0 19 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>  /* ROW8 = D12 */
+            ;
+        col-gpios
+            = <&gpio1 12 GPIO_ACTIVE_HIGH>  /* COL0 = D7 */
+            , <&gpio1 13 GPIO_ACTIVE_HIGH>  /* COL1 = D8 */
+            , <&gpio1 14 GPIO_ACTIVE_HIGH>  /* COL2 = D9 */
+            , <&gpio1 15 GPIO_ACTIVE_HIGH>  /* COL3 = D10 */
+            , <&gpio1 1 GPIO_ACTIVE_HIGH>  /* COL4 = D13 */
+            , <&gpio0 9 GPIO_ACTIVE_HIGH>  /* COL5 = D14 */
+            , <&gpio0 10 GPIO_ACTIVE_HIGH>  /* COL6 = D15 */
+            , <&gpio1 7 GPIO_ACTIVE_HIGH>  /* COL7 = D17 */
+            , <&gpio1 5 GPIO_ACTIVE_HIGH>  /* COL8 = D18 */
+            ;
+    };
+
+    default_transform: keymap_transform_0 {
+        compatible = "zmk,matrix-transform";
+        rows = <9>;
+        columns = <9>;
+        map = <
+RC(0,0) RC(0,1) RC(0,2) RC(0,3) RC(0,4) RC(0,5) RC(0,6) RC(0,7) RC(0,8) RC(6,0) RC(6,1) RC(6,2) RC(6,3) RC(6,4) RC(6,5)
+RC(1,0) RC(1,1) RC(1,2) RC(1,3) RC(1,4) RC(1,5) RC(1,6) RC(1,7) RC(1,8) RC(6,6) RC(6,7) RC(6,8) RC(7,0) RC(7,1) RC(7,2)
+RC(2,0) RC(2,1) RC(2,2) RC(2,3) RC(2,4) RC(2,5) RC(2,6) RC(2,7) RC(2,8) RC(7,3) RC(7,4) RC(7,5) RC(7,6) RC(7,7)
+RC(3,0) RC(3,1) RC(3,2) RC(3,3) RC(3,4) RC(3,5) RC(3,6) RC(3,7) RC(3,8) RC(7,8) RC(8,0) RC(8,1) RC(8,2)
+RC(4,0) RC(4,1) RC(4,2) RC(4,3) RC(4,4) RC(4,5) RC(4,6) RC(4,7) RC(4,8) RC(8,3) RC(8,4) RC(8,5) RC(8,6)
+RC(5,0) RC(5,1) RC(5,2) RC(5,3) RC(5,4) RC(5,5) RC(5,6) RC(5,7) RC(5,8) RC(8,7) RC(8,8)
+        >;
+    };
+
+    macjis_layout: macjis_layout {
+        compatible = "zmk,physical-layout";
+        display-name = "MacBook JIS 75%";
+        transform = <&default_transform>;
+
+        keys  //                     w   h    x   y  rot rx ry
+            = <&key_physical_attrs 100 100    0   0 0 0 0>  /* esc */
+            , <&key_physical_attrs 100 100  100   0 0 0 0>  /* F1 */
+            , <&key_physical_attrs 100 100  200   0 0 0 0>  /* F2 */
+            , <&key_physical_attrs 100 100  300   0 0 0 0>  /* F3 */
+            , <&key_physical_attrs 100 100  400   0 0 0 0>  /* F4 */
+            , <&key_physical_attrs 100 100  500   0 0 0 0>  /* F5 */
+            , <&key_physical_attrs 100 100  600   0 0 0 0>  /* F6 */
+            , <&key_physical_attrs 100 100  700   0 0 0 0>  /* F7 */
+            , <&key_physical_attrs 100 100  800   0 0 0 0>  /* F8 */
+            , <&key_physical_attrs 100 100  900   0 0 0 0>  /* F9 */
+            , <&key_physical_attrs 100 100 1000   0 0 0 0>  /* F10 */
+            , <&key_physical_attrs 100 100 1100   0 0 0 0>  /* F11 */
+            , <&key_physical_attrs 100 100 1200   0 0 0 0>  /* F12 */
+            , <&key_physical_attrs 100 100 1300   0 0 0 0>  /* lock */
+            , <&key_physical_attrs 100 100 1400   0 0 0 0>  /* light */
+            , <&key_physical_attrs 100 100    0 100 0 0 0>  /* 半角 */
+            , <&key_physical_attrs 100 100  100 100 0 0 0>  /* 1 */
+            , <&key_physical_attrs 100 100  200 100 0 0 0>  /* 2 */
+            , <&key_physical_attrs 100 100  300 100 0 0 0>  /* 3 */
+            , <&key_physical_attrs 100 100  400 100 0 0 0>  /* 4 */
+            , <&key_physical_attrs 100 100  500 100 0 0 0>  /* 5 */
+            , <&key_physical_attrs 100 100  600 100 0 0 0>  /* 6 */
+            , <&key_physical_attrs 100 100  700 100 0 0 0>  /* 7 */
+            , <&key_physical_attrs 100 100  800 100 0 0 0>  /* 8 */
+            , <&key_physical_attrs 100 100  900 100 0 0 0>  /* 9 */
+            , <&key_physical_attrs 100 100 1000 100 0 0 0>  /* 0 */
+            , <&key_physical_attrs 100 100 1100 100 0 0 0>  /* - */
+            , <&key_physical_attrs 100 100 1200 100 0 0 0>  /* ^ */
+            , <&key_physical_attrs 100 100 1300 100 0 0 0>  /* ¥ */
+            , <&key_physical_attrs 100 100 1400 100 0 0 0>  /* bs */
+            , <&key_physical_attrs 150 100    0 200 0 0 0>  /* tab */
+            , <&key_physical_attrs 100 100  150 200 0 0 0>  /* Q */
+            , <&key_physical_attrs 100 100  250 200 0 0 0>  /* W */
+            , <&key_physical_attrs 100 100  350 200 0 0 0>  /* E */
+            , <&key_physical_attrs 100 100  450 200 0 0 0>  /* R */
+            , <&key_physical_attrs 100 100  550 200 0 0 0>  /* T */
+            , <&key_physical_attrs 100 100  650 200 0 0 0>  /* Y */
+            , <&key_physical_attrs 100 100  750 200 0 0 0>  /* U */
+            , <&key_physical_attrs 100 100  850 200 0 0 0>  /* I */
+            , <&key_physical_attrs 100 100  950 200 0 0 0>  /* O */
+            , <&key_physical_attrs 100 100 1050 200 0 0 0>  /* P */
+            , <&key_physical_attrs 100 100 1150 200 0 0 0>  /* @ */
+            , <&key_physical_attrs 100 100 1250 200 0 0 0>  /* [ */
+            , <&key_physical_attrs 125 200 1375 200 0 0 0>  /* enter */
+            , <&key_physical_attrs 175 100    0 300 0 0 0>  /* ctrl */
+            , <&key_physical_attrs 100 100  175 300 0 0 0>  /* A */
+            , <&key_physical_attrs 100 100  275 300 0 0 0>  /* S */
+            , <&key_physical_attrs 100 100  375 300 0 0 0>  /* D */
+            , <&key_physical_attrs 100 100  475 300 0 0 0>  /* F */
+            , <&key_physical_attrs 100 100  575 300 0 0 0>  /* G */
+            , <&key_physical_attrs 100 100  675 300 0 0 0>  /* H */
+            , <&key_physical_attrs 100 100  775 300 0 0 0>  /* J */
+            , <&key_physical_attrs 100 100  875 300 0 0 0>  /* K */
+            , <&key_physical_attrs 100 100  975 300 0 0 0>  /* L */
+            , <&key_physical_attrs 100 100 1075 300 0 0 0>  /* ; */
+            , <&key_physical_attrs 100 100 1175 300 0 0 0>  /* : */
+            , <&key_physical_attrs 100 100 1275 300 0 0 0>  /* ] */
+            , <&key_physical_attrs 225 100    0 400 0 0 0>  /* shift */
+            , <&key_physical_attrs 100 100  225 400 0 0 0>  /* Z */
+            , <&key_physical_attrs 100 100  325 400 0 0 0>  /* X */
+            , <&key_physical_attrs 100 100  425 400 0 0 0>  /* C */
+            , <&key_physical_attrs 100 100  525 400 0 0 0>  /* V */
+            , <&key_physical_attrs 100 100  625 400 0 0 0>  /* B */
+            , <&key_physical_attrs 100 100  725 400 0 0 0>  /* N */
+            , <&key_physical_attrs 100 100  825 400 0 0 0>  /* M */
+            , <&key_physical_attrs 100 100  925 400 0 0 0>  /* , */
+            , <&key_physical_attrs 100 100 1025 400 0 0 0>  /* . */
+            , <&key_physical_attrs 100 100 1125 400 0 0 0>  /* / */
+            , <&key_physical_attrs 100 100 1225 400 0 0 0>  /* _ */
+            , <&key_physical_attrs 175 100 1325 400 0 0 0>  /* shift */
+            , <&key_physical_attrs 100 100    0 500 0 0 0>  /* fn */
+            , <&key_physical_attrs 100 100  100 500 0 0 0>  /* opt */
+            , <&key_physical_attrs 100 100  200 500 0 0 0>  /* cmd */
+            , <&key_physical_attrs 100 100  300 500 0 0 0>  /* 英数 */
+            , <&key_physical_attrs 500 100  400 500 0 0 0>  /* space */
+            , <&key_physical_attrs 100 100  900 500 0 0 0>  /* かな */
+            , <&key_physical_attrs 100 100 1000 500 0 0 0>  /* cmd */
+            , <&key_physical_attrs 100 100 1100 500 0 0 0>  /* ← */
+            , <&key_physical_attrs 100 100 1200 500 0 0 0>  /* ↑ */
+            , <&key_physical_attrs 100 100 1300 500 0 0 0>  /* ↓ */
+            , <&key_physical_attrs 100 100 1400 500 0 0 0>  /* → */
+            ;
+    };
+};
+
+/ {
+    /* 電源スイッチは無い。&soft_off で切り、キーを押すと復帰する（kscan を復帰元にする） */
+    soft_off_wakers {
+        compatible = "zmk,soft-off-wakeup-sources";
+        wakeup-sources = <&kscan0>;
+    };
+
+};
+
+/* 状態ランプは XIAO の 3 色 LED。zmk-rgbled-widget の rgbled_adapter シールドが割り当てる
+   （build.yaml で shield に一緒に指定する） */
+
+/* D14 (P0.09) / D15 (P0.10) は NFC 端子なので GPIO として使う設定にする */
+&uicr {
+    nfct-pins-as-gpios;
+};

@@ -1,0 +1,67 @@
+[
+  {
+    "x_mm": 6.072,
+    "y_mm": -0.856,
+    "type": "screw"
+  },
+  {
+    "x_mm": 101.37,
+    "y_mm": -0.856,
+    "type": "screw"
+  },
+  {
+    "x_mm": 182.88,
+    "y_mm": -1.356,
+    "type": "screw"
+  },
+  {
+    "x_mm": 266.7,
+    "y_mm": 19.05,
+    "type": "screw"
+  },
+  {
+    "x_mm": 19.05,
+    "y_mm": 95.25,
+    "type": "screw"
+  },
+  {
+    "x_mm": 102.87,
+    "y_mm": 105.156,
+    "type": "screw"
+  },
+  {
+    "x_mm": 279.178,
+    "y_mm": 94.156,
+    "type": "screw"
+  },
+  {
+    "x_mm": 14.288,
+    "y_mm": -10.5,
+    "type": "cover"
+  },
+  {
+    "x_mm": 114.3,
+    "y_mm": -10.5,
+    "type": "cover"
+  },
+  {
+    "x_mm": 194.31,
+    "y_mm": -10.5,
+    "type": "cover"
+  },
+  {
+    "x_mm": 51.435,
+    "y_mm": 56.65,
+    "type": "support"
+  },
+  {
+    "x_mm": 142.875,
+    "y_mm": 56.15,
+    "type": "support"
+  },
+  {
+    "x_mm": 235.815,
+    "y_mm": 56.15,
+    "type": "support"
+  }
+]

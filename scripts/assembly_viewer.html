@@ -1,0 +1,435 @@
+<title>macjis 完成図</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: 作業台に置いたキーボードを主役に、下に操作とスペックを並べる工房の検図シート */
+:root {
+  --bg: #eceef0;
+  --surface: #f8f9fa;
+  --fg: #1c1f23;
+  --muted: #5d646d;
+  --line: #d3d7dc;
+  --accent: #2f6f8f;
+  --stage: #dfe2e5;
+  --label-bg: rgba(248, 249, 250, 0.92);
+  --font-body: "Zen Kaku Gothic New", "Hiragino Sans", "Noto Sans JP", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #15171a; --surface: #1d2024; --fg: #e6e8eb; --muted: #9aa2ab;
+    --line: #2e3238; --accent: #7fb6d1; --stage: #202328; --label-bg: rgba(29, 32, 36, 0.92); color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #15171a; --surface: #1d2024; --fg: #e6e8eb; --muted: #9aa2ab;
+  --line: #2e3238; --accent: #7fb6d1; --stage: #202328; --label-bg: rgba(29, 32, 36, 0.92); color-scheme: dark;
+}
+body { background: var(--bg); color: var(--fg); font-family: var(--font-body); line-height: 1.6; }
+.wrap { max-width: 1180px; margin: 0 auto; padding-block: 20px 40px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid; gap: 16px; }
+header { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 16px; }
+h1 { font-size: 1.35rem; font-weight: 700; margin: 0; letter-spacing: 0.02em; text-wrap: balance; }
+.tag { font-family: var(--font-mono); font-size: 0.78rem; color: var(--muted); }
+.stage { position: relative; background: var(--stage); border: 1px solid var(--line); border-radius: 6px;
+  height: min(64vh, 600px); min-height: 340px; overflow: hidden; touch-action: none; }
+.stage canvas { display: block; width: 100%; height: 100%; }
+.bar { position: absolute; top: 10px; left: 10px; right: 10px; display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-between; pointer-events: none; }
+.bar > div { display: flex; flex-wrap: wrap; gap: 6px; pointer-events: auto; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; background: var(--surface); }
+.seg button { border: 0; border-radius: 0; padding: 5px 14px; }
+.seg button + button { border-left: 1px solid var(--line); }
+.status { position: absolute; inset: auto 12px 10px auto; font-family: var(--font-mono); font-size: 0.75rem; color: var(--muted); }
+.labels { position: absolute; inset: 0; pointer-events: none; }
+.label { position: absolute; left: 0; top: 0; transform: translate(-50%, -100%); white-space: nowrap;
+  font-size: 0.74rem; line-height: 1.3; padding: 2px 8px; border-radius: 4px; background: var(--label-bg);
+  border: 1px solid var(--line); color: var(--fg); }
+.label::after { content: ""; position: absolute; left: 50%; top: 100%; width: 1px; height: var(--lead, 14px); background: var(--muted); }
+.label[hidden], .seg[hidden] { display: none; }
+.panel { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; }
+.group { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.group h2 { font-size: 0.78rem; letter-spacing: 0.08em; color: var(--muted); margin: 0; font-weight: 500; }
+.row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.row > span { font-size: 0.85rem; min-width: 6.5em; color: var(--muted); }
+button { font: inherit; font-size: 0.82rem; color: var(--fg); background: var(--surface); border: 1px solid var(--line);
+  border-radius: 999px; padding: 4px 12px; cursor: pointer; }
+button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; font-size: 0.85rem; }
+dt { color: var(--muted); }
+dd { margin: 0; font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+ul { margin: 0; padding-left: 1.1em; font-size: 0.85rem; display: grid; gap: 4px; }
+.note { font-size: 0.8rem; color: var(--muted); margin: 0; }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>macjis 完成図</h1>
+    <span class="tag">案 C · 81 キー · Choc V1 · 基板 v0（KiCad データ）· ケースは仮</span>
+  </header>
+
+  <div class="stage" id="stage">
+    <div class="labels" id="labels"></div>
+    <div class="bar">
+      <div class="seg" role="group" aria-label="表示モード">
+        <button data-mode="assembled" aria-pressed="true">完成</button>
+        <button data-mode="exploded" aria-pressed="false">分解</button>
+        <button data-mode="board" aria-pressed="false">基板</button>
+      </div>
+      <div>
+        <div class="seg" role="group" aria-label="視点" id="views">
+          <button data-view="persp" aria-pressed="true">斜め</button>
+          <button data-view="top" aria-pressed="false">真上</button>
+          <button data-view="side" aria-pressed="false">横</button>
+          <button data-view="back" aria-pressed="false">奥</button>
+        </div>
+        <div class="seg" role="group" aria-label="基板の面" id="faces" hidden>
+          <button data-face="front" aria-pressed="true">表</button>
+          <button data-face="rear" aria-pressed="false">裏</button>
+        </div>
+        <button id="t-labels" aria-pressed="false">ラベル</button>
+      </div>
+    </div>
+    <div class="status" id="status">読み込み中…</div>
+  </div>
+
+  <div class="panel">
+    <section class="group" aria-labelledby="h-show">
+      <h2 id="h-show">表示する部品</h2>
+      <div class="row">
+        <button data-part="case" aria-pressed="true">ケース</button>
+        <button data-part="cover" aria-pressed="true">カバー</button>
+        <button data-part="keycaps" aria-pressed="true">キーキャップ</button>
+        <button data-part="switches" aria-pressed="true">スイッチ</button>
+        <button data-part="board" aria-pressed="true">基板</button>
+        <button data-part="battery" aria-pressed="true">電池</button>
+      </div>
+      <p class="note">「分解」で部品を上下に離して重なりを確認できます。「基板」は KiCad の設計データそのままの基板で、表と裏を切り替えられます。</p>
+    </section>
+
+    <section class="group" aria-labelledby="h-finish">
+      <h2 id="h-finish">仕上げ（確定）</h2>
+      <dl>
+        <dt>キーキャップ</dt><dd>黒（Black Resin）、刻印は彫りのみ</dd>
+        <dt>基板</dt><dd>黒（JLCPCB のソルダーレジスト）</dd>
+        <dt>ケース</dt><dd>アルミ、ビーズブラスト + クリアアルマイト（銀）</dd>
+        <dt>上帯カバー</dt><dd>黒い樹脂</dd>
+      </dl>
+    </section>
+
+    <section class="group" aria-labelledby="h-dim">
+      <h2 id="h-dim">寸法</h2>
+      <dl>
+        <dt>ケース外形</dt><dd>294.8 × 143.3 mm</dd>
+        <dt>ケース高さ</dt><dd>キー側 15.1 mm／上帯側 18.1 mm</dd>
+        <dt>キートップまで</dt><dd>16.1 mm（キー側）</dd>
+        <dt>基板</dt><dd>287.75 × 136.3 × 1.6 mm</dd>
+        <dt>キーキャップ</dt><dd>18.0 mm 角 × 5.8 mm</dd>
+        <dt>キーの沈み</dt><dd>2.7 mm</dd>
+      </dl>
+    </section>
+
+    <section class="group" aria-labelledby="h-bom">
+      <h2 id="h-bom">部品の数</h2>
+      <dl>
+        <dt>スイッチ</dt><dd>85（81 キー）</dd>
+        <dt>ホットスワップソケット</dt><dd>85</dd>
+        <dt>ダイオード</dt><dd>81</dd>
+        <dt>M2 ネジ（基板）</dt><dd>7</dd>
+        <dt>M2 ネジ（カバー、底から）</dt><dd>3 ＋ インサート 3</dd>
+        <dt>中央の支え</dt><dd>3（ゴム足付き）</dd>
+        <dt>電源スイッチ</dt><dd>なし（fn＋esc 長押しで切る）</dd>
+        <dt>マイコン</dt><dd>XIAO nRF52840 Plus</dd>
+        <dt>電池</dt><dd>LiPo 600 mAh 前後</dd>
+      </dl>
+    </section>
+
+    <section class="group" aria-labelledby="h-open">
+      <h2 id="h-open">まだ決まっていないこと</h2>
+      <ul>
+        <li>上帯カバーの材質（樹脂。アンテナ窓を兼ねる）</li>
+        <li>キーキャップの軸の太さ（試作で決める）</li>
+      </ul>
+    </section>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/environments/RoomEnvironment.js"></script>
+<script>
+(function () {
+  if (THREE.ColorManagement) THREE.ColorManagement.legacyMode = false; // 色の指定を sRGB として扱う
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const stage = document.getElementById("stage");
+  const status = document.getElementById("status");
+  const labelLayer = document.getElementById("labels");
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 0.9;
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  stage.prepend(renderer.domElement);
+
+  const scene = new THREE.Scene();
+  if (THREE.RoomEnvironment) {
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    scene.environment = pmrem.fromScene(new THREE.RoomEnvironment(), 0.04).texture;
+  }
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x8a8f96, 0.35));
+  const sun = new THREE.DirectionalLight(0xffffff, 1.1);
+  sun.position.set(-120, 260, 160);
+  sun.castShadow = true;
+  sun.shadow.mapSize.set(2048, 2048);
+  Object.assign(sun.shadow.camera, { left: -220, right: 220, top: 160, bottom: -160, near: 1, far: 800 });
+  scene.add(sun);
+  const under = new THREE.DirectionalLight(0xffffff, 0.6); // 基板の裏を見るときの光
+  under.position.set(80, -260, -120);
+  scene.add(under);
+
+  const camera = new THREE.PerspectiveCamera(30, 1, 1, 4000);
+  const controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.08;
+  controls.maxDistance = 1400;
+  controls.minDistance = 40;
+
+  const ground = new THREE.Mesh(new THREE.PlaneGeometry(4000, 4000), new THREE.ShadowMaterial({ opacity: 0.18 }));
+  ground.rotation.x = -Math.PI / 2;
+  ground.receiveShadow = true;
+  scene.add(ground);
+
+  const std = (o) => new THREE.MeshStandardMaterial(o);
+  const mat = {
+    case: std({ color: 0xc4c8cd, metalness: 0.85, roughness: 0.42 }),
+    cover: std({ color: 0x1b1c1e, roughness: 0.75 }),
+    mcu: std({ color: 0x1f2c44, roughness: 0.5 }),
+    usb: std({ color: 0xb9bcc0, metalness: 0.9, roughness: 0.3 }),
+    battery: std({ color: 0xa9adb3, metalness: 0.6, roughness: 0.35 }),
+    switches: std({ color: 0x3a3e45, roughness: 0.55 }),
+    keycaps: std({ color: 0x232426, roughness: 0.82 }),
+    legends: std({ color: 0x18191a, roughness: 0.95 }),
+    screws: std({ color: 0x55585e, metalness: 0.8, roughness: 0.4 }),
+    feet: std({ color: 0x2a2b2d, roughness: 0.9 }),
+  };
+  // 樹脂などは映り込みを弱くする（環境光が強いと黒が灰色に見える）
+  ["cover", "mcu", "switches", "keycaps", "legends"].forEach((k) => { mat[k].envMapIntensity = 0.25; });
+  // 分解したときの持ち上げ量 (mm)
+  const LIFT = { case: 0, battery: 14, board: 34, mcu: 34, usb: 34, screws: 52, switches: 58, keycaps: 82, legends: 82, cover: 74 };
+  // 底から入れるカバー用のネジも、分解時は基板のネジと一緒に持ち上がる（位置の目安）
+  // 「表示する部品」のボタンと模型の対応
+  const PARTS = { case: ["case", "feet"], cover: ["cover"], keycaps: ["keycaps", "legends"], switches: ["switches", "screws"],
+                  board: ["board", "mcu", "usb"], battery: ["battery"] };
+  const BOARD_ONLY = ["board", "mcu", "usb"];
+
+  // 基板は黒（JLCPCB の黒のソルダーレジストはほぼ不透明で、下の配線はうっすら見える程度）
+  const BOARD_FINISH = { mask: 0x020203, opacity: 1, silk: 0xf4f4f2 };
+  const masks = [], silks = [];
+  const state = { mode: "assembled", face: "front", labels: false,
+                  show: { case: true, cover: true, keycaps: true, switches: true, board: true, battery: true } };
+  const groups = {};
+  const root = new THREE.Group();
+  root.scale.setScalar(1000); // glTF はメートル単位
+  scene.add(root);
+  const labels = [];
+
+  // glTF の JSON に埋め込んだバイナリ (data: URI) は CSP で読めないため、取得後に GLB へ組み直して parse する
+  async function fetchGlb(n) {
+    const res = await fetch(`models/${n}.json`);
+    if (!res.ok) throw new Error(`${n}: HTTP ${res.status}`);
+    const gltf = await res.json();
+    const b64 = gltf.buffers[0].uri.split(",")[1];
+    delete gltf.buffers[0].uri;
+    const bin = Uint8Array.from(atob(b64), (ch) => ch.charCodeAt(0));
+    const pad = (len) => (4 - (len % 4)) % 4;
+    const json = new TextEncoder().encode(JSON.stringify(gltf));
+    const jsonPad = pad(json.length), binPad = pad(bin.length);
+    const total = 12 + 8 + json.length + jsonPad + 8 + bin.length + binPad;
+    const out = new ArrayBuffer(total), view = new DataView(out), bytes = new Uint8Array(out);
+    view.setUint32(0, 0x46546c67, true); view.setUint32(4, 2, true); view.setUint32(8, total, true);
+    view.setUint32(12, json.length + jsonPad, true); view.setUint32(16, 0x4e4f534a, true);
+    bytes.set(json, 20); bytes.fill(0x20, 20 + json.length, 20 + json.length + jsonPad);
+    const binAt = 20 + json.length + jsonPad;
+    view.setUint32(binAt, bin.length + binPad, true); view.setUint32(binAt + 4, 0x004e4942, true);
+    bytes.set(bin, binAt + 8);
+    return out;
+  }
+
+  const loader = new THREE.GLTFLoader();
+  const names = ["feet", "case", "cover", "board", "mcu", "usb", "battery", "switches", "keycaps", "legends", "screws"];
+  let loaded = 0;
+  Promise.all(names.map((n) => fetchGlb(n).then((buf) => new Promise((resolve, reject) => {
+    loader.parse(buf, "", (g) => {
+      const holder = new THREE.Group();   // 分解の持ち上げはこの入れ物に掛ける
+      holder.add(g.scene);
+      g.scene.traverse((o) => {
+        if (!o.isMesh) return;
+        if (mat[n]) o.material = mat[n]; // 基板は KiCad の色をそのまま使う
+        o.castShadow = true; o.receiveShadow = true;
+      });
+      if (n === "board") {
+        g.scene.position.y = -0.0016; // KiCad の書き出しは基板の下面が 0
+        // KiCad の書き出しでは、半透明の緑がソルダーレジスト、半透明の白がシルク印刷
+        g.scene.traverse((o) => {
+          if (!o.isMesh || !o.material.transparent) return;
+          const m = o.material, c = m.color;
+          if (c.g > c.r && c.g > 0.1 && c.g < 0.5 && !masks.includes(m)) {
+            masks.push(m); m.roughness = 0.45; m.depthWrite = false;
+          } else if (c.r > 0.9 && c.g > 0.9 && c.b > 0.9 && !silks.includes(m)) {
+            silks.push(m); m.opacity = 1;
+          }
+        });
+      }
+      groups[n] = holder;
+      root.add(holder);
+      status.textContent = `読み込み中… ${++loaded}/${names.length}`;
+      resolve();
+    }, reject);
+  })))).then(() => fetch("models/labels.json")).then((r) => r.json()).then((list) => {
+    list.forEach((l) => {
+      const anchor = new THREE.Object3D();
+      anchor.position.fromArray(l.pos);
+      (groups[l.group] || root).add(anchor);
+      const el = document.createElement("div");
+      el.className = "label";
+      el.textContent = l.text;
+      el.hidden = true;
+      labelLayer.appendChild(el);
+      labels.push({ anchor, el, group: l.group });
+    });
+    const box = new THREE.Box3().setFromObject(root);
+    const c = box.getCenter(new THREE.Vector3());
+    root.position.sub(new THREE.Vector3(c.x, box.min.y, c.z));
+    status.textContent = "ドラッグで回転・ピンチ／ホイールで拡大";
+    applyBoardFinish();
+    applyVisibility();
+    setView("persp", true);
+  }).catch((e) => {
+    console.error(e);
+    status.textContent = `モデルを読み込めませんでした（${e && e.message ? e.message : e}）。ページを再読み込みしてください。`;
+  });
+
+  // 視点: [カメラ位置, 注視点] (mm)
+  const VIEWS = {
+    persp: [[-150, 230, 330], [0, 0, 8]],
+    top: [[0, 520, 0.01], [0, 0, 0]],
+    side: [[0, 30, 420], [0, 6, 0]],
+    back: [[180, 160, -300], [0, 0, 0]],
+    exploded: [[-260, 220, 380], [0, 40, 0]],
+    front: [[0, 430, 70], [0, 10, 0]],
+    rear: [[0, -430, 70], [0, 10, 0]],
+  };
+  let camTween = null;
+  function setView(name, instant) {
+    const [p, t] = VIEWS[name];
+    const to = { p: new THREE.Vector3(...p), t: new THREE.Vector3(...t) };
+    if (instant || reduceMotion) {
+      camera.position.copy(to.p); controls.target.copy(to.t); controls.update(); camTween = null; return;
+    }
+    camTween = { from: { p: camera.position.clone(), t: controls.target.clone() }, to, k: 0 };
+  }
+
+  function pressed(sel, test) {
+    document.querySelectorAll(sel).forEach((b) => b.setAttribute("aria-pressed", String(test(b))));
+  }
+  function applyVisibility() {
+    Object.entries(groups).forEach(([n, g]) => {
+      let on;
+      if (state.mode === "board") on = BOARD_ONLY.includes(n);
+      else on = Object.entries(PARTS).some(([part, ns]) => ns.includes(n) && state.show[part]);
+      g.visible = on;
+    });
+    ground.visible = !(state.mode === "board" && state.face === "rear");
+  }
+  function setMode(mode) {
+    state.mode = mode;
+    pressed("[data-mode]", (b) => b.dataset.mode === mode);
+    document.getElementById("views").hidden = mode === "board";
+    document.getElementById("faces").hidden = mode !== "board";
+    if (mode !== "assembled" && !state.labelsTouched) { state.labels = true; pressed("#t-labels", () => true); }
+    applyVisibility();
+    setView(mode === "board" ? state.face : mode === "exploded" ? "exploded" : "persp");
+  }
+  document.querySelectorAll("[data-mode]").forEach((b) => b.addEventListener("click", () => setMode(b.dataset.mode)));
+  document.querySelectorAll("[data-view]").forEach((b) => b.addEventListener("click", () => {
+    pressed("[data-view]", (x) => x === b); setView(b.dataset.view);
+  }));
+  document.querySelectorAll("[data-face]").forEach((b) => b.addEventListener("click", () => {
+    state.face = b.dataset.face; pressed("[data-face]", (x) => x === b); applyVisibility(); setView(state.face);
+  }));
+  document.getElementById("t-labels").addEventListener("click", (e) => {
+    state.labels = !state.labels; state.labelsTouched = true; e.currentTarget.setAttribute("aria-pressed", String(state.labels));
+  });
+  document.querySelectorAll("[data-part]").forEach((b) => b.addEventListener("click", () => {
+    const k = b.dataset.part; state.show[k] = !state.show[k];
+    b.setAttribute("aria-pressed", String(state.show[k]));
+    if (state.mode === "board") setMode("assembled"); else applyVisibility();
+  }));
+
+  function applyBoardFinish() {
+    // 映り込みを弱くしないと照明で灰色に見える
+    masks.forEach((m) => {
+      m.color.setHex(BOARD_FINISH.mask); m.opacity = BOARD_FINISH.opacity; m.roughness = 0.55; m.envMapIntensity = 0.2;
+    });
+    silks.forEach((m) => m.color.setHex(BOARD_FINISH.silk));
+  }
+
+  function resize() {
+    const w = stage.clientWidth, h = stage.clientHeight;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+  }
+  new ResizeObserver(resize).observe(stage);
+  resize();
+
+  const tmp = new THREE.Vector3();
+  const ease = (k) => 1 - Math.pow(1 - k, 3);
+  renderer.setAnimationLoop(() => {
+    // 分解: 各部品を目標の高さへ近づける
+    const exploded = state.mode === "exploded";
+    Object.entries(groups).forEach(([n, g]) => {
+      const target = exploded ? (LIFT[n] || 0) / 1000 : 0;
+      g.position.y = reduceMotion ? target : g.position.y + (target - g.position.y) * 0.12;
+    });
+    if (camTween) {
+      camTween.k = Math.min(1, camTween.k + 0.045);
+      const e = ease(camTween.k);
+      camera.position.lerpVectors(camTween.from.p, camTween.to.p, e);
+      controls.target.lerpVectors(camTween.from.t, camTween.to.t, e);
+      if (camTween.k >= 1) camTween = null;
+    }
+    controls.update();
+    renderer.render(scene, camera);
+    // ラベル: 指している点の上に置き、重なるものは上へずらして引き出し線を伸ばす
+    const w = stage.clientWidth, h = stage.clientHeight;
+    const placed = [];
+    labels.map((l) => {
+      const g = groups[l.group];
+      if (!state.labels || (g && !g.visible)) return { l, show: false };
+      l.anchor.getWorldPosition(tmp);
+      tmp.project(camera);
+      const show = tmp.z < 1 && Math.abs(tmp.x) < 1.05 && Math.abs(tmp.y) < 1.05;
+      return { l, show, x: (tmp.x + 1) / 2 * w, y: (1 - tmp.y) / 2 * h };
+    }).sort((a, b) => (b.y || 0) - (a.y || 0)).forEach(({ l, show, x, y }) => {
+      l.el.hidden = !show;
+      if (!show) return;
+      const lw = l.el.offsetWidth || 120, lh = l.el.offsetHeight || 20;
+      let lead = 14;
+      for (let guard = 0; guard < 20; guard++) {
+        const top = y - lead - lh;
+        const hit = placed.find((r) => Math.abs(r.x - x) < (r.w + lw) / 2 + 4 && top < r.bottom + 3 && top + lh > r.top - 3);
+        if (!hit) break;
+        lead = y - (hit.top - 3) + 0.5;
+      }
+      placed.push({ x, w: lw, top: y - lead - lh, bottom: y - lead });
+      l.el.style.setProperty("--lead", `${lead}px`);
+      l.el.style.transform = `translate(${x}px, ${y - lead}px) translate(-50%, -100%)`;
+    });
+  });
+})();
+</script>

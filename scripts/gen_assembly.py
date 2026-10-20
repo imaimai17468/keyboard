@@ -47,7 +47,7 @@ FRONT_GAP = 2.5           # キーの下: 基板の裏から底板まで
 BACK_GAP = 5.5            # 上帯の下: 電池 (厚さ 5 mm) と電池コネクタ (高さ 約 4.8 mm)
 FLOOR_FRONT = -PCB_T - FRONT_GAP - FLOOR_T  # 底面の高さ（キー側）
 FLOOR_BACK = -PCB_T - BACK_GAP - FLOOR_T    # 底面の高さ（上帯側）
-STEP_Y = 3.0              # 段の位置（上帯の手前の端から 3 mm キー側、y 上向き）
+STEP_Y = 0.5              # 段の位置（上帯の手前の端から 0.5 mm 上帯側、y 上向き）。深い所の幅は 21 mm で幅 20 mm の電池が入る
 FOOT_FRONT, FOOT_BACK = 4.0, 1.0  # ゴム足の高さ。前を高くして水平に置く（低くすれば手前が下がる）
 SCREW_BOSS_D = 4.0        # ネジ受けの柱（M2 のめねじ、下穴 φ1.6）。gen_pcb.py の MOUNT_CLEAR_BOTTOM_MM と合わせる
 TAP_D, TAP_DEPTH = 1.6, 3.0  # キー側の底は薄いので、めねじは 3 mm（M2 の 1.5 倍）
@@ -69,8 +69,8 @@ GLTF_TRANSFORM = ["npx", "--yes", "@gltf-transform/cli@4.1.1"]
 MCU_SIZE = (21.0, 17.8, 1.2)
 MCU_Z = 0.0
 XIAO_USB_MM = 12.6        # gen_pcb.py と同じ（モジュール中心から USB-C の先端まで）
-BATTERY = (70.0, 17.0, 5.0)  # 上帯の下に入る細長い LiPo（厚さ 5 × 幅 17 × 長さ 70 mm 以内、600 mAh 前後）
-BATTERY_X = 154.0         # 中心の x（カバーのネジ受けの間で、電池コネクタに近い側）
+BATTERY = (30.0, 20.0, 5.0)  # EEMB 502030（厚さ 5 × 幅 20 × 長さ 30 mm、250 mAh）。ネジ受けの柱の間なので長さ 64 mm まで入る
+BATTERY_X = 163.0         # 中心の x（カバーのネジ受けの間で、電池コネクタに近い側。アンテナからは離す）
 def glb_to_json(glb, dst):
     """GLB をバイナリ埋め込みの glTF (JSON) に変換する。Artifact で .glb を配信できないため。"""
     data = glb.read_bytes()
@@ -126,7 +126,7 @@ def main():
            .moved(Location((mcu_x - 2.2, strip_y - 0.6, MCU_Z + MCU_SIZE[2])))]
     usb = [Box(7.4, 9.0, 3.2, align=(Align.MAX, Align.CENTER, Align.MIN))
            .moved(Location((mcu_x + XIAO_USB_MM - 0.5, strip_y, MCU_Z + MCU_SIZE[2])))]
-    battery_y = (STEP_Y + TOP_STRIP_MM) / 2
+    battery_y = (STEP_Y + TOP_STRIP_MM + CASE_GAP) / 2  # 深い所（段から内壁まで）の中央
     battery = Box(*BATTERY, align=(Align.CENTER, Align.CENTER, Align.MIN)).moved(
         Location((BATTERY_X, battery_y, FLOOR_BACK + FLOOR_T + 0.3)))
 

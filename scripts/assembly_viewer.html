@@ -77,6 +77,10 @@ ul { margin: 0; padding-left: 1.1em; font-size: 0.85rem; display: grid; gap: 4px
 .items a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; overflow-wrap: anywhere; }
 .items .price { font-family: var(--font-mono); font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
 .items .use { grid-column: 1 / -1; color: var(--muted); font-size: 0.78rem; }
+.totals { display: grid; grid-template-columns: 1fr auto; gap: 4px 16px; font-size: 0.88rem; max-width: 520px; }
+.totals dt { color: var(--muted); }
+.totals dd { text-align: right; }
+.totals .sum { font-weight: 700; color: var(--fg); border-top: 1px solid var(--line); padding-top: 6px; }
 .done { font-size: 0.72rem; border: 1px solid var(--line); border-radius: 999px; padding: 0 7px; color: var(--muted); margin-left: 6px; white-space: nowrap; }
 </style>
 
@@ -172,8 +176,36 @@ ul { margin: 0; padding-left: 1.1em; font-size: 0.85rem; display: grid; gap: 4px
   <section class="buy" aria-labelledby="h-buy">
     <header>
       <h2 id="h-buy">購入リスト</h2>
-      <p class="note">価格は 2026-10-20 時点（税込）。基板・ケース・カバー・キーキャップは JLC で別に発注</p>
+      <p class="note">価格は 2026-10-20 時点。JLC は見積もり画面の金額（注文はまだ）</p>
     </header>
+    <div class="cat">
+      <h3>JLC で作るもの</h3>
+      <div class="stores">
+        <div class="store">
+          <h4>JLC3DP<span>¥15,554</span></h4>
+          <ul class="items">
+          <li><a href="https://jlc3dp.com/3d-printing-quote" target="_blank" rel="noopener">キーキャップ 1u × 75（Black Resin）</a><span class="price">¥12,821</span><span class="use">1 個 ¥171。軸の太さは試作の結果で決めてから発注</span></li>
+          <li><a href="https://jlc3dp.com/3d-printing-quote" target="_blank" rel="noopener">キーキャップ 大きいキー × 6</a><span class="price">¥1,065</span><span class="use">tab ¥173、control・右 shift ¥174、左 shift ¥177、return ¥179、space ¥188</span></li>
+          <li><a href="https://jlc3dp.com/3d-printing-quote" target="_blank" rel="noopener">上帯カバー（Black Resin、厚さ 2 mm）</a><span class="price">¥524</span><span class="use">長さ 290 mm</span></li>
+          <li><span>送料（OCS Express、0.27 kg）</span><span class="price">¥1,144</span><span class="use">4〜6 営業日</span></li>
+          </ul>
+        </div>
+        <div class="store">
+          <h4>JLCPCB<span>$34.71 ≈ ¥5,311</span></h4>
+          <ul class="items">
+          <li><a href="https://cart.jlcpcb.com/quote" target="_blank" rel="noopener">基板 × 5 枚（2 層・1.6 mm・黒・鉛フリー HASL）</a><span class="price">$24.90</span><span class="use">287.75 × 136.3 mm。製造 3 日</span></li>
+          <li><span>送料（UPS、0.81 kg）</span><span class="price">$9.81</span><span class="use">2〜4 営業日</span></li>
+          </ul>
+        </div>
+        <div class="store">
+          <h4>JLCCNC<span>$125.96 ≈ ¥19,272</span></h4>
+          <ul class="items">
+          <li><a href="https://jlccnc.com/cnc-machining-quote" target="_blank" rel="noopener">アルミケース（6061、ビーズブラスト + アルマイト Natural・マット）</a><span class="price">$116.15</span><span class="use">材料 $20.68・加工 $74.38・設計費 $15.10・表面処理 $5.99。最終価格は JLC の審査後に確定</span></li>
+          <li><span>送料（UPS、0.58 kg）</span><span class="price">$9.81</span><span class="use">2〜4 営業日。M2 ネジ穴 7 か所は図面（PDF）を付けて指定する。追加費用は審査で決まる</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
     <div class="cat">
       <h3>電子部品</h3>
       <div class="stores">
@@ -211,6 +243,16 @@ ul { margin: 0; padding-left: 1.1em; font-size: 0.85rem; display: grid; gap: 4px
           </ul>
         </div>
       </div>
+    </div>
+    <div class="cat">
+      <h3>合計（これから払う分）</h3>
+      <dl class="totals">
+        <dt>JLC（3 社、送料込み）</dt><dd>¥40,137</dd>
+        <dt>遊舎工房（送料込み）</dt><dd>¥18,623</dd>
+        <dt>Amazon</dt><dd>¥6,301</dd>
+        <dt class="sum">合計</dt><dd class="sum">¥65,061</dd>
+      </dl>
+      <p class="note">ドルは 1 ドル ≈ 153 円（JLC3DP の円表示から逆算）で換算。購入済みの XIAO（¥4,400）は含まない。JLC の荷物は輸入の消費税と通関手数料が別にかかることがある（数千円程度）。JLC の画面に出ているクーポン（$20〜$50 引き）が使えればその分安くなる。</p>
     </div>
   </section>
 </div>

@@ -19,8 +19,8 @@ import subprocess
 import sys
 from pathlib import Path
 
-from build123d import (Align, Box, BuildPart, BuildSketch, Compound, Cylinder, Location, Locations, Mode,
-                       RectangleRounded, export_gltf, export_step, extrude)
+from build123d import (Align, Axis, Box, BuildPart, BuildSketch, Compound, Cylinder, Location, Locations, Mode,
+                       RectangleRounded, export_gltf, export_step, extrude, fillet)
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import gen_keycaps as kc  # noqa: E402
@@ -50,7 +50,9 @@ FLOOR_BACK = -PCB_T - BACK_GAP - FLOOR_T    # 底面の高さ（上帯側）
 STEP_Y = 0.5              # 段の位置（上帯の手前の端から 0.5 mm 上帯側、y 上向き）。深い所の幅は 21 mm で幅 20 mm の電池が入る
 FOOT_FRONT, FOOT_BACK = 4.0, 2.2  # ゴム足の高さ。手前 φ10 × 4 mm、奥 3M CS-01 (φ7.9 × 2.2 mm)。奥が 1.2 mm 高く、手前に少し傾く
 SCREW_BOSS_D = 4.0        # ネジ受けの柱（M2 のめねじ、下穴 φ1.6）。gen_pcb.py の MOUNT_CLEAR_BOTTOM_MM と合わせる
-TAP_D, TAP_DEPTH = 1.6, 3.0  # キー側の底は薄いので、めねじは 3 mm（M2 の 1.5 倍）
+# 基板用のめねじ M2×0.4 6H: 下穴 φ1.6 × 深さ 2.5、有効ねじ長 1.5（参考記事と同じ指定）。
+# 止まり穴の底から外側の底面まで 2 mm 以上残すよう JLC から指示がある（キー側の底は 6.1 - 1.6 - 2.5 = 2.0 mm）
+TAP_D, TAP_DEPTH, THREAD_LEN = 1.6, 2.5, 1.5
 SUPPORT_D = 3.0           # 中央の支え柱。上にカプトンテープを貼って基板を下から支える
 RUBBER_T = 0.1            # 支え柱の上に貼るカプトンテープ（基板の裏を傷つけない）
 HEAD_D, HEAD_T = 3.8, 1.3  # M2 低頭ネジの頭
@@ -63,6 +65,7 @@ LED_HOLE_D = 1.5
 LED_OFFSET = (7.68, -5.71)
 RESET_OFFSET = (8.57, 5.72)
 USB_OPENING = (11.0, 6.0)  # 右側面の USB-C の穴（幅・高さ）。ケーブルのプラグ外形が通る大きさ
+USB_OPENING_R = 1.0        # 穴の角の丸み（横から削る刃物の半径）
 KICAD_CLI = "/Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli"
 GLTF_TRANSFORM = ["npx", "--yes", "@gltf-transform/cli@4.1.1"]
 # マイコン（XIAO nRF52840 Plus、基板に直接はんだ付け）と電池の簡略形状
@@ -185,6 +188,11 @@ def main():
         usb_z = MCU_Z + MCU_SIZE[2] + 1.6
         with Locations((ix1 + CASE_WALL / 2, strip_y, usb_z)):
             Box(CASE_WALL + 1, *USB_OPENING, mode=Mode.SUBTRACT)
+        usb_edges = case.edges().filter_by(Axis.X).filter_by(
+            lambda e: abs(e.center().X - (ix1 + CASE_WALL / 2)) < CASE_WALL / 2 + 0.01
+            and abs(e.center().Y - strip_y) <= USB_OPENING[0] / 2 + 0.01
+            and abs(e.center().Z - usb_z) <= USB_OPENING[1] / 2 + 0.01)
+        fillet(usb_edges, USB_OPENING_R)
     cover_z = DECK_Z - COVER_T
     led = (mcu_x + LED_OFFSET[0], strip_y + LED_OFFSET[1])
     reset = (mcu_x + RESET_OFFSET[0], strip_y + RESET_OFFSET[1])
@@ -211,6 +219,20 @@ def main():
     # JLCCNC / JLC3DP に出すケースとカバー
     export_step(case.part, str(out.parent / "case.step"))
     export_step(cover.part, str(out.parent / "cover.step"))
+    # JLCCNC に付ける図面用（scripts/gen_drawing.py）。原点はケース外形の左下、y 上向き
+    (out.parent / "case_features.json").write_text(json.dumps({
+        "size": [ox1 - ox0, oy1 - oy0], "corner_r": CASE_R,
+        "height": DECK_Z - FLOOR_BACK, "height_front": DECK_Z - FLOOR_FRONT,
+        "inner": [ix0 - ox0, iy0 - oy0, ix1 - ox0, iy1 - oy0], "inner_r": INNER_R,
+        "step_y": STEP_Y - CASE_WALL - oy0, "floor_t": FLOOR_T,
+        "tapped": [[x - ox0, y - oy0] for x, y in screws],
+        "tap": {"thread": "M2x0.4-6H", "thread_len": THREAD_LEN, "drill_d": TAP_D, "drill_depth": TAP_DEPTH,
+                "boss_d": SCREW_BOSS_D, "boss_top_from_deck": DECK_Z + PCB_T},
+        "through": [[x - ox0, y - oy0] for x, y in covers],
+        "counterbore": {"d": COUNTERBORE_D, "depth": HEAD_T + 0.2, "hole_d": 2.4},
+        "usb": {"w": USB_OPENING[0], "h": USB_OPENING[1], "r": USB_OPENING_R, "y": strip_y - oy0,
+                "z_from_bottom": MCU_Z + MCU_SIZE[2] + 1.6 - FLOOR_BACK},
+    }, indent=1))
     for name in ["board", *groups]:
         glb = out / f"{name}.glb"
         if name == "board":

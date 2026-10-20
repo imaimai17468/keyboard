@@ -26,3 +26,5 @@ echo "gerber: $OUT/macjis-gerber.zip"
 # 完成図とケース（基板のネジ位置を使う）
 .venv/bin/python scripts/gen_assembly.py "build/$NAME/matrix.json" "$PCB" build/assembly/models \
   2>&1 | grep -E '^(mount|case):'
+# JLCCNC に付ける図面（めねじの位置と仕様）
+python3 scripts/gen_drawing.py build/assembly/case_features.json build/assembly/case_drawing.pdf

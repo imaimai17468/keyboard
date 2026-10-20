@@ -329,8 +329,10 @@ ul { margin: 0; padding-left: 1.1em; font-size: 0.85rem; display: grid; gap: 4px
   const BOARD_ONLY = ["board", "mcu", "usb"];
 
   // 基板は黒（JLCPCB の黒のソルダーレジストはほぼ不透明で、下の配線はうっすら見える程度）
-  const BOARD_FINISH = { mask: 0x020203, opacity: 1, silk: 0xf4f4f2 };
-  const masks = [], silks = [];
+  // 黒いレジストは銅箔の上に薄く乗るので、配線が少し浮いて見える。半透明にして下の配線を透かす。
+  // 露出した銅（パッド・穴の周り）は鉛フリー HASL の銀色
+  const BOARD_FINISH = { mask: 0x050506, opacity: 0.8, silk: 0xf4f4f2, copper: 0xd2d2cc, core: 0x0c0c0b };
+  const masks = [], silks = [], coppers = [], cores = [];
   const state = { mode: "assembled", face: "front", labels: false,
                   show: { case: true, cover: true, keycaps: true, switches: true, board: true, battery: true } };
   const groups = {};
@@ -377,8 +379,14 @@ ul { margin: 0; padding-left: 1.1em; font-size: 0.85rem; display: grid; gap: 4px
         g.scene.position.y = -0.0016; // KiCad の書き出しは基板の下面が 0
         // KiCad の書き出しでは、半透明の緑がソルダーレジスト、半透明の白がシルク印刷
         g.scene.traverse((o) => {
-          if (!o.isMesh || !o.material.transparent) return;
+          if (!o.isMesh) return;
           const m = o.material, c = m.color;
+          if (!m.transparent) {   // KiCad の銅箔は黄色（金めっき色）で書き出される
+            if (c.r > 0.6 && c.g > 0.5 && c.b < 0.1 && !coppers.includes(m)) coppers.push(m);
+            // 基材（FR-4）は半透明のレジスト越しに透けて灰色に見えるので暗くする
+            else if (c.r > 0.35 && c.r < 0.5 && c.b < 0.35 && c.g > c.b + 0.1 && !cores.includes(m)) cores.push(m);
+            return;
+          }
           if (c.g > c.r && c.g > 0.1 && c.g < 0.5 && !masks.includes(m)) {
             masks.push(m); m.roughness = 0.45; m.depthWrite = false;
           } else if (c.r > 0.9 && c.g > 0.9 && c.b > 0.9 && !silks.includes(m)) {
@@ -454,6 +462,9 @@ ul { margin: 0; padding-left: 1.1em; font-size: 0.85rem; display: grid; gap: 4px
     document.getElementById("faces").hidden = mode !== "board";
     if (mode !== "assembled" && !state.labelsTouched) { state.labels = true; pressed("#t-labels", () => true); }
     applyVisibility();
+    // 基板のときはパッドや配線を見られるよう近くまで寄れるようにする
+    controls.minDistance = mode === "board" ? 6 : 40;
+    camera.near = mode === "board" ? 0.3 : 1; camera.updateProjectionMatrix();
     setView(mode === "board" ? state.face : mode === "exploded" ? "exploded" : "persp");
   }
   document.querySelectorAll("[data-mode]").forEach((b) => b.addEventListener("click", () => setMode(b.dataset.mode)));
@@ -475,7 +486,11 @@ ul { margin: 0; padding-left: 1.1em; font-size: 0.85rem; display: grid; gap: 4px
   function applyBoardFinish() {
     // 映り込みを弱くしないと照明で灰色に見える
     masks.forEach((m) => {
-      m.color.setHex(BOARD_FINISH.mask); m.opacity = BOARD_FINISH.opacity; m.roughness = 0.55; m.envMapIntensity = 0.2;
+      m.color.setHex(BOARD_FINISH.mask); m.opacity = BOARD_FINISH.opacity; m.roughness = 0.32; m.envMapIntensity = 0.35;
+    });
+    cores.forEach((m) => { m.color.setHex(BOARD_FINISH.core); m.roughness = 0.8; });
+    coppers.forEach((m) => {
+      m.color.setHex(BOARD_FINISH.copper); m.metalness = 1; m.roughness = 0.3; m.envMapIntensity = 1;
     });
     silks.forEach((m) => m.color.setHex(BOARD_FINISH.silk));
   }

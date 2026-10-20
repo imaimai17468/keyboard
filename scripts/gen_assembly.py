@@ -24,6 +24,7 @@ from build123d import (Align, Box, BuildPart, BuildSketch, Compound, Cylinder, L
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import gen_keycaps as kc  # noqa: E402
+import legends as lg  # noqa: E402
 
 TOP_STRIP_MM = 21.0       # gen_pcb.py と同じ
 EDGE_MARGIN_MM = 1.0
@@ -70,10 +71,6 @@ MCU_Z = 0.0
 XIAO_USB_MM = 12.6        # gen_pcb.py と同じ（モジュール中心から USB-C の先端まで）
 BATTERY = (70.0, 17.0, 5.0)  # 上帯の下に入る細長い LiPo（厚さ 5 × 幅 17 × 長さ 70 mm 以内、600 mAh 前後）
 BATTERY_X = 154.0         # 中心の x（カバーのネジ受けの間で、電池コネクタに近い側）
-LABELS = {"bs": "delete", "enter": "return", "ctrl": "control", "opt": "option", "cmd": "command",
-          "space": "", "light": "BT", "半角": "半角"}
-
-
 def glb_to_json(glb, dst):
     """GLB をバイナリ埋め込みの glTF (JSON) に変換する。Artifact で .glb を配信できないため。"""
     data = glb.read_bytes()
@@ -102,10 +99,6 @@ def kicad_board(pcb, glb):
     subprocess.run([KICAD_CLI, "pcb", "export", "glb", "-f", "--include-tracks", "--include-pads",
                     "--include-silkscreen", "--include-soldermask", "--user-origin", "0x0mm",
                     "-o", str(glb), str(pcb)], check=True, capture_output=True)
-
-
-def legend_size(text):
-    return 4.2 if len(text) <= 2 else 2.6
 
 
 def main():
@@ -145,8 +138,7 @@ def main():
             for (w, h, t), z in ((SW_BASE, 0.0), (SW_TOP, SW_BASE[2]), (SW_STEM, SW_BASE[2] + SW_TOP[2])):
                 switches.append(Box(w, h, t, align=(Align.CENTER, Align.CENTER, Align.MIN))
                                 .moved(Location((sx, sy, z))))
-        text = LABELS.get(k["label"], k["label"])
-        cap, mark = kc.keycap(k["rects"], k["switches"], text, legend_size(text), engrave=False)
+        cap, mark = kc.keycap(k["rects"], k["switches"], lg.legend(k, width), engrave=False)
         caps.append(cap.moved(Location((kx, ky, CAP_Z))))
         if mark is not None:
             legends.append(mark.moved(Location((kx, ky, CAP_Z + 0.02))))  # 上面と重ならないよう少し浮かせる

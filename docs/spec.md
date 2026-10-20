@@ -10,7 +10,7 @@
 | スイッチ | Kailh Ambients Silent Choc **V1** Nocturnal（静音リニア 20g、5 ピン）。遊舎工房で 35 個入り ¥5,390 |
 | スイッチ固定 | ホットスワップソケット（Kailh Choc 用、V1/V2 共通ピン） |
 | 長いキーの支え | スタビライザーは使わず、キーの下にスイッチを複数置いて並列に配線する（Space 3 個、左 Shift・Enter 2 個） |
-| キーキャップ | 自作（build123d で設計し JLC3DP で造形）。Choc V1 軸、約 18 mm 角。黒（Black Resin）、刻印は彫り込みのみ（色は入れない） |
+| キーキャップ | 自作（build123d で設計し JLC3DP で造形）。Choc V1 軸、約 18 mm 角。黒（Black Resin）、刻印は彫り込みのみ（色は入れない）。刻印は MacBook の JIS 配列と同じでかなは無し（`scripts/legends.py`、一覧 `build/keycaps/set/legends.png`） |
 | MCU | Seeed Studio XIAO nRF52840 Plus（遊舎工房で購入可。基板に直接はんだ付け）。ZMK のボード名は `seeeduino_xiao_ble` |
 | ファームウェア | ZMK |
 | 電源 | LiPo バッテリー 600 mAh 前後（充電は XIAO 内蔵回路）。電源スイッチは無く、fn+esc 長押しで ZMK の soft off、キーを押すと復帰 |
@@ -31,7 +31,7 @@
 
 - MacBook のような「上下半分の高さの ↑↓」は不可。Choc のスイッチ本体が約 15 mm 角で、半分の高さ（9.5 mm）に 2 個縦に並ばないため。
 - 矢印は 4 つ横一列に決定（逆 T 字は右 Shift を細くすれば作れるが採用しない）。
-- 案 C で caps 位置を ctrl にする場合、刻印は「caps」のまま（キー割り当ては ZMK で自由に変更可）。
+- 案 C の caps 位置は ctrl（刻印も control）。MacBook に無い 3 キーの刻印: 1 の左は「半角」、右上の 2 つは鍵（画面ロック）と Bluetooth（接続先の切り替え）
 - 案 C は 16u の下段から fn を 1 つ減らしている。fn は左下に置く。
 
 ## 3. マトリクスとピン数

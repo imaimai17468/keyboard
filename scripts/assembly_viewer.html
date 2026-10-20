@@ -201,7 +201,7 @@ ul { margin: 0; padding-left: 1.1em; font-size: 0.85rem; display: grid; gap: 4px
           <h4>JLCCNC<span>$126.22 ≈ ¥19,312</span></h4>
           <ul class="items">
           <li><a href="https://jlccnc.com/cnc-machining-quote" target="_blank" rel="noopener">アルミケース（6061、ビーズブラスト + アルマイト Natural・マット）</a><span class="price">$116.41</span><span class="use">ネジ穴と底の段を直したデータで取り直した金額。最終価格は JLC の審査後に確定</span></li>
-          <li><span>送料（UPS、0.58 kg）</span><span class="price">$9.81</span><span class="use">2〜4 営業日。M2 めねじ 7 か所は図面（case_drawing.pdf、作成済み）を付けて指定する。追加費用は審査で決まる</span></li>
+          <li><span>送料（UPS、0.58 kg）</span><span class="price">$9.81</span><span class="use">2〜4 営業日。M2 めねじ 7 か所は図面（case_drawing.pdf）、奥の面のアイコンと @imaimai17468 のレーザー刻印は図面（case_marking_drawing.pdf と case_marking.svg）を付けて指定する。追加費用は審査で決まる</span></li>
           </ul>
         </div>
       </div>
@@ -317,14 +317,15 @@ ul { margin: 0; padding-left: 1.1em; font-size: 0.85rem; display: grid; gap: 4px
     legends: std({ color: 0x18191a, roughness: 0.95 }),
     screws: std({ color: 0x55585e, metalness: 0.8, roughness: 0.4 }),
     feet: std({ color: 0x2a2b2d, roughness: 0.9 }),
+    marking: std({ color: 0x55585e, roughness: 0.85 }),  // 奥の面のレーザー刻印（見やすいよう実物より濃い灰色）
   };
   // 樹脂などは映り込みを弱くする（環境光が強いと黒が灰色に見える）
   ["cover", "mcu", "switches", "keycaps", "legends"].forEach((k) => { mat[k].envMapIntensity = 0.25; });
   // 分解したときの持ち上げ量 (mm)
-  const LIFT = { case: 0, battery: 14, board: 34, mcu: 34, usb: 34, screws: 52, switches: 58, keycaps: 82, legends: 82, cover: 74 };
+  const LIFT = { case: 0, marking: 0, battery: 14, board: 34, mcu: 34, usb: 34, screws: 52, switches: 58, keycaps: 82, legends: 82, cover: 74 };
   // 底から入れるカバー用のネジも、分解時は基板のネジと一緒に持ち上がる（位置の目安）
   // 「表示する部品」のボタンと模型の対応
-  const PARTS = { case: ["case", "feet"], cover: ["cover"], keycaps: ["keycaps", "legends"], switches: ["switches", "screws"],
+  const PARTS = { case: ["case", "feet", "marking"], cover: ["cover"], keycaps: ["keycaps", "legends"], switches: ["switches", "screws"],
                   board: ["board", "mcu", "usb"], battery: ["battery"] };
   const BOARD_ONLY = ["board", "mcu", "usb"];
 
@@ -364,7 +365,7 @@ ul { margin: 0; padding-left: 1.1em; font-size: 0.85rem; display: grid; gap: 4px
   }
 
   const loader = new THREE.GLTFLoader();
-  const names = ["feet", "case", "cover", "board", "mcu", "usb", "battery", "switches", "keycaps", "legends", "screws"];
+  const names = ["feet", "case", "marking", "cover", "board", "mcu", "usb", "battery", "switches", "keycaps", "legends", "screws"];
   let loaded = 0;
   Promise.all(names.map((n) => fetchGlb(n).then((buf) => new Promise((resolve, reject) => {
     loader.parse(buf, "", (g) => {

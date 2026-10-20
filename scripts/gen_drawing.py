@@ -119,5 +119,50 @@ def main():
     print(pdf)
 
 
+def marking_sheet(f, pdf):
+    """奥の面のレーザー刻印の図（A4 横・1:1 の奥から見た図と、刻印の位置）。"""
+    import re
+    W, Z, m = f["size"][0], f["height"], f["marking"]
+    art = (pdf.parent / m["svg"]).read_text()
+    vb = re.search(r'viewBox="([^"]+)"', art).group(1)
+    inner = art[art.index(">", art.index("<svg")) + 1:art.rindex("</svg>")]
+    pw, ph = 420, 160
+    ox, oy = (pw - W) / 2, 45
+    cx, cz = ox + m["from_left"], oy + Z - m["from_bottom"]
+    el = [f'<rect x="{ox}" y="{oy}" width="{W}" height="{Z}" fill="none" stroke="#000" stroke-width="0.5"/>',
+          f'<svg x="{cx - m["w"] / 2:.2f}" y="{cz - m["h"] / 2:.2f}" width="{m["w"]:.2f}" height="{m["h"]:.2f}" '
+          f'viewBox="{vb}" preserveAspectRatio="none">{inner}</svg>']
+    t = lambda x, y, s, size=3.0, anchor="start", weight="400": el.append(
+        f'<text x="{x:.2f}" y="{y:.2f}" font-size="{size}" text-anchor="{anchor}" font-weight="{weight}">{s}</text>')
+    ln = lambda x1, y1, x2, y2, w=0.2: el.append(
+        f'<line x1="{x1:.2f}" y1="{y1:.2f}" x2="{x2:.2f}" y2="{y2:.2f}" stroke="#000" stroke-width="{w}"/>')
+    t(ox + W / 2, oy - 14, "BACK VIEW (seen from the back side) - LASER MARKING", 3.5, "middle", "700")
+    ln(ox, oy - 4, cx, oy - 4)
+    t((ox + cx) / 2, oy - 5, f'{m["from_left"]:.2f} (to center of marking)', 2.8, "middle")
+    ln(ox - 6, oy + Z, ox - 6, cz)
+    t(ox - 7, (oy + Z + cz) / 2 + 1, f'{m["from_bottom"]:.2f}', 2.8, "end")
+    ln(cx - m["w"] / 2, oy + Z + 5, cx + m["w"] / 2, oy + Z + 5)
+    t(cx, oy + Z + 9, f'marking area {m["w"]:.1f} x {m["h"]:.1f}', 2.8, "middle")
+    notes = ["NOTES",
+             "1. Laser marking on the back face only (after anodizing). Do not engrave; no depth required.",
+             f'2. Artwork: {m["svg"]} at 1:1 (filled areas are marked). Centered at the dimensions above.',
+             "3. Left edge of this view is the right side face of the case (the side with the USB-C opening).",
+             "4. Third angle projection. Scale 1:1. Dimensions in mm."]
+    for j, s in enumerate(notes):
+        t(ox, oy + Z + 22 + j * 4.6, s, 2.9, "start", "700" if j == 0 else "400")
+    svg = (f'<svg xmlns="http://www.w3.org/2000/svg" width="{pw}mm" height="{ph}mm" viewBox="0 0 {pw} {ph}" '
+           f'font-family="Helvetica, Arial, sans-serif">' + "".join(el) + "</svg>")
+    html = pdf.with_suffix(".html")
+    html.write_text(f'<!doctype html><meta charset="utf-8"><style>@page{{size:{pw}mm {ph}mm;margin:0}}'
+                    "html,body{margin:0}svg{display:block}</style>" + svg)
+    pdf.with_suffix(".svg").write_text(svg)
+    subprocess.run([CHROME, "--headless=new", "--disable-gpu", "--no-pdf-header-footer",
+                    f"--print-to-pdf={pdf.resolve()}", f"file://{html.resolve()}"], check=True, capture_output=True)
+    print(pdf)
+
+
 if __name__ == "__main__":
     main()
+    feats = json.loads(Path(sys.argv[1]).read_text())
+    if "marking" in feats:
+        marking_sheet(feats, Path(sys.argv[2]).with_name("case_marking_drawing.pdf"))

@@ -19,12 +19,13 @@ import subprocess
 import sys
 from pathlib import Path
 
-from build123d import (Align, Axis, Box, BuildPart, BuildSketch, Compound, Cylinder, Location, Locations, Mode,
-                       RectangleRounded, export_gltf, export_step, extrude, fillet)
+from build123d import (Align, Axis, Box, Plane, BuildPart, BuildSketch, Compound, Cylinder, Location, Locations, Mode,
+                       RectangleRounded, ExportSVG, Unit, export_gltf, export_step, extrude, fillet)
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import gen_keycaps as kc  # noqa: E402
 import legends as lg  # noqa: E402
+import marking as mk  # noqa: E402
 
 TOP_STRIP_MM = 21.0       # gen_pcb.py と同じ
 EDGE_MARGIN_MM = 1.0
@@ -217,8 +218,14 @@ def main():
     feet = [Cylinder(r, h, align=(Align.CENTER, Align.CENTER, Align.MAX)).moved(Location((x, y, z)))
             for x in (ox0 + 20, ox1 - 20)
             for y, z, h, r in ((oy0 + 12, FLOOR_FRONT, FOOT_FRONT, 5.0), (oy1 - 10, FLOOR_BACK, FOOT_BACK, 3.95))]
+    # 奥の面のレーザー刻印（アイコンと @imaimai17468）。形は変えないので STEP には入れず、完成図にだけ薄い板で置く。
+    # 奥から見て読めるよう、刻印の右向き（u）をケースの -x に向ける
+    mark_sketch, mark_size = mk.marking_sketch()
+    mark_center = ((ox0 + ox1) / 2, (DECK_Z + FLOOR_BACK) / 2)
+    mark_plane = Plane(origin=(mark_center[0], oy1, mark_center[1]), x_dir=(-1, 0, 0), z_dir=(0, 1, 0))
+    marking = extrude(mark_sketch.moved(mark_plane.location), amount=0.03)
     groups = {"feet": feet, "case": [case.part], "cover": [cover.part], "mcu": mcu, "usb": usb, "battery": [battery],
-              "switches": switches, "keycaps": caps, "legends": legends, "screws": heads}
+              "switches": switches, "keycaps": caps, "legends": legends, "screws": heads, "marking": [marking]}
     # JLCCNC / JLC3DP に出すケースとカバー
     export_step(case.part, str(out.parent / "case.step"))
     export_step(cover.part, str(out.parent / "cover.step"))
@@ -235,7 +242,15 @@ def main():
         "counterbore": {"d": COUNTERBORE_D, "depth": HEAD_T + 0.2, "hole_d": 2.4},
         "usb": {"w": USB_OPENING[0], "h": USB_OPENING[1], "r": USB_OPENING_R, "y": strip_y - oy0,
                 "z_from_bottom": MCU_Z + MCU_SIZE[2] + 1.6 - FLOOR_BACK},
+        # 奥の面の刻印。奥から見た中心の位置（左端 = ケースの右側面からの距離、底面からの高さ）と大きさ
+        "marking": {"from_left": ox1 - mark_center[0], "from_bottom": mark_center[1] - FLOOR_BACK,
+                    "w": mark_size[0], "h": mark_size[1], "svg": "case_marking.svg"},
     }, indent=1))
+    # 刻印の原寸の線画（奥から見た向き、mm）。JLCCNC にレーザー刻印の図として付ける
+    svg = ExportSVG(unit=Unit.MM, line_weight=0.0)
+    svg.add_layer("marking", fill_color=(0, 0, 0), line_color=(0, 0, 0))
+    svg.add_shape(mark_sketch, layer="marking")
+    svg.write(str(out.parent / "case_marking.svg"))
     for name in ["board", *groups]:
         glb = out / f"{name}.glb"
         if name == "board":

@@ -8,7 +8,9 @@ legend(key, board_width) がキー上面に彫る形（build123d の Sketch、�
 """
 import math
 
-from build123d import (Align, BuildLine, BuildSketch, CenterArc, Circle, EllipticalCenterArc, Line,
+from OCP.BRepBuilderAPI import BRepBuilderAPI_NurbsConvert
+
+from build123d import (Align, BuildLine, BuildSketch, CenterArc, Circle, EllipticalCenterArc, Face, Line,
                        Locations, Mode, Polygon, Polyline, Rectangle, Sketch, Text, offset, trace)
 
 FONT_DIR = "/System/Library/Fonts"
@@ -58,7 +60,9 @@ def _text(s, size, font, x, y, ax, ay, max_w=None):
         try:
             with BuildSketch() as one:
                 offset(face, amount=THICKEN)
-            face = one.sketch
+            # offset の輪郭はオフセット曲線のままだと STEP に立体として書き出せない（面の集まりになる）ので
+            # NURBS に変換しておく
+            face = Face(BRepBuilderAPI_NurbsConvert(one.sketch.faces()[0].wrapped, True).Shape())
         except RuntimeError:
             pass
         shape = face if shape is None else shape + face

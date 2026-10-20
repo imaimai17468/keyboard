@@ -84,7 +84,7 @@ D16 (P0.31) は電池電圧の測定につながっているので使わず、�
 
 - 外形: 287.75 × 136.3 mm（キー領域 + 外周 1 mm、上に 21 mm の帯）
 - 上帯の右端に XIAO nRF52840 Plus（USB-C は右辺向き、アンテナ側は内側）、その左に電池コネクタ（裏面）。電源スイッチ・リセットスイッチは無し
-- XIAO は基板に直接はんだ付け。縁のパッドと追加パッドは横からはんだごてが当たる。モジュールの下に隠れる電池パッド (VBAT / GND) には φ0.7 の穴を開け、基板の裏からはんだを流す
+- XIAO は基板に直接はんだ付け。縁のパッド（2.54 mm ピッチ）は横からはんだごてが当たる。追加パッド D11〜D18（縁のパッドの間、1.27 mm ずれ・パッド間 0.32 mm）は横からだとブリッジしやすいので、使う 7 本に φ0.5 の穴（銅の残り 0.225 mm）を開けて基板の裏からはんだを流す。モジュールの下に隠れる電池パッド (VBAT / GND) にも φ0.7 の穴。使わない D16・D19 は穴なし（裏の配線を通すため）
 - アンテナ: XIAO の USB と反対側の端（チップアンテナ）。モジュール中心から 7 mm より先の直下と、端から先 7 mm の帯全高を配線・ビア禁止。モジュールの下の表面は配線禁止（モジュール裏の露出パッドと触れないため）
 - スイッチ 85（81 キー。Space に 3 個、左 Shift・Enter に 2 個）、ダイオード 81（裏面）、2 層、Freerouting で全配線済み（所要 約 7〜12 分）
 - 配線幅 0.2 mm 以上・間隔 0.2 mm。Freerouting は混んだ箇所で配線を細らせるため、配線時だけ間隔を 0.25 mm にし、読み込み後に 0.2 mm へ戻している
@@ -118,7 +118,7 @@ D16 (P0.31) は電池電圧の測定につながっているので使わず、�
 ## 7. 参照する設計データ
 
 - スイッチフットプリント: perigoso/keyswitch-kicad-library の `SW_Hotswap_Kailh_Choc_V1V2`（MIT / CC-BY-SA 4.0）→ `pcb/lib/keyboard.pretty`
-- XIAO nRF52840 Plus: Seeed-Studio/OPL_Kicad_Library の `XIAO-nRF52840-Plus-SMD`（CC-BY-SA 4.0）を、電池パッドに穴を開けて改変 → `pcb/lib/keyboard.pretty`
+- XIAO nRF52840 Plus: Seeed-Studio/OPL_Kicad_Library の `XIAO-nRF52840-Plus-SMD`（CC-BY-SA 4.0）を、電池パッドと追加パッド（D11〜D15・D17・D18）に穴を開けて改変 → `pcb/lib/keyboard.pretty`
 - XIAO のアンテナ・LED・リセットボタンの位置: 同ライブラリの `Seeed Studio XIAO nRF52840 v1.3` 基板データ
 - ダイオード・スイッチ類・JST コネクタ: KiCad 標準ライブラリ
 - Choc V1 キーキャップ軸の寸法: braindefender/KLP-Lame-Keycaps（CC-BY-SA 4.0）の STEP を実測。

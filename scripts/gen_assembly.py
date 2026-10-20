@@ -48,11 +48,11 @@ BACK_GAP = 5.5            # 上帯の下: 電池 (厚さ 5 mm) と電池コネ�
 FLOOR_FRONT = -PCB_T - FRONT_GAP - FLOOR_T  # 底面の高さ（キー側）
 FLOOR_BACK = -PCB_T - BACK_GAP - FLOOR_T    # 底面の高さ（上帯側）
 STEP_Y = 0.5              # 段の位置（上帯の手前の端から 0.5 mm 上帯側、y 上向き）。深い所の幅は 21 mm で幅 20 mm の電池が入る
-FOOT_FRONT, FOOT_BACK = 4.0, 1.0  # ゴム足の高さ。前を高くして水平に置く（低くすれば手前が下がる）
+FOOT_FRONT, FOOT_BACK = 4.0, 2.2  # ゴム足の高さ。手前 φ10 × 4 mm、奥 3M CS-01 (φ7.9 × 2.2 mm)。奥が 1.2 mm 高く、手前に少し傾く
 SCREW_BOSS_D = 4.0        # ネジ受けの柱（M2 のめねじ、下穴 φ1.6）。gen_pcb.py の MOUNT_CLEAR_BOTTOM_MM と合わせる
 TAP_D, TAP_DEPTH = 1.6, 3.0  # キー側の底は薄いので、めねじは 3 mm（M2 の 1.5 倍）
-SUPPORT_D = 3.0           # 中央の支え柱。上に厚さ 1 mm のゴム足を貼って基板を下から支える
-RUBBER_T = 1.0
+SUPPORT_D = 3.0           # 中央の支え柱。上にカプトンテープを貼って基板を下から支える
+RUBBER_T = 0.1            # 支え柱の上に貼るカプトンテープ（基板の裏を傷つけない）
 HEAD_D, HEAD_T = 3.8, 1.3  # M2 低頭ネジの頭
 COUNTERBORE_D = 4.2       # カバー用ネジ（底から入れる）の頭の逃げ
 COVER_POST_D = 6.0        # カバー裏の柱。M2 の熱圧入インサート (φ3.2 × 3 mm) を埋める
@@ -202,10 +202,10 @@ def main():
         with Locations((*led, cover_z)):  # 状態ランプの光が見える穴
             Cylinder(LED_HOLE_D / 2, COVER_T * 3, mode=Mode.SUBTRACT)
 
-    # ゴム足（φ10）: 手前 2 つはキー側の底に、奥 2 つは上帯の張り出しの底に
-    feet = [Cylinder(5.0, h, align=(Align.CENTER, Align.CENTER, Align.MAX)).moved(Location((x, y, z)))
+    # ゴム足: 手前 2 つ（φ10）はキー側の底に、奥 2 つ（φ7.9）は上帯の張り出しの底に
+    feet = [Cylinder(r, h, align=(Align.CENTER, Align.CENTER, Align.MAX)).moved(Location((x, y, z)))
             for x in (ox0 + 20, ox1 - 20)
-            for y, z, h in ((oy0 + 12, FLOOR_FRONT, FOOT_FRONT), (oy1 - 10, FLOOR_BACK, FOOT_BACK))]
+            for y, z, h, r in ((oy0 + 12, FLOOR_FRONT, FOOT_FRONT, 5.0), (oy1 - 10, FLOOR_BACK, FOOT_BACK, 3.95))]
     groups = {"feet": feet, "case": [case.part], "cover": [cover.part], "mcu": mcu, "usb": usb, "battery": [battery],
               "switches": switches, "keycaps": caps, "legends": legends, "screws": heads}
     # JLCCNC / JLC3DP に出すケースとカバー

@@ -256,7 +256,7 @@ def main():
         ("cover", "状態ランプ（電源・接続・電池）", led[0], led[1], DECK_Z),
         ("screws", f"カバーを留めるネジ ×{len(covers)}（底から）", covers[-1][0], covers[-1][1], FLOOR_BACK),
         ("cover", "リセット（穴から押す）", reset[0], reset[1], DECK_Z),
-        ("board", "電池コネクタ（裏）", width - 78.0, strip_y, -PCB_T),
+        ("board", "電池コネクタ（裏）", width - 96.0, strip_y, -PCB_T),  # gen_pcb.py の BAT_CONNECTOR_FROM_RIGHT_MM
         ("battery", "LiPo 電池（上帯の下）", BATTERY_X, battery_y, FLOOR_BACK + FLOOR_T + BATTERY[2]),
         ("screws", f"M2 ネジ ×{len(screws)}", sx, sy, HEAD_T),
         ("case", f"中央の支え ×{len(supports)}", supports[0][0], supports[0][1], -PCB_T - RUBBER_T),

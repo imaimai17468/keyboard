@@ -28,8 +28,11 @@ MOUNT_CLEAR_BOTTOM_MM = 2.0
 # ネジを置きたいおおよその位置（キー領域の幅・高さに対する割合）。上帯は y < 0
 MOUNT_TARGETS = [(0.03, 0.08), (0.36, 0.08), (0.64, 0.08), (0.97, 0.08),
                  (0.03, 0.92), (0.36, 0.92), (0.64, 0.92), (0.97, 0.92)]
-# 上帯のネジは底から通し、基板と一緒に上帯の樹脂カバー（裏の柱 φ6）を留める
-COVER_STRIP_X = [0.05, 0.4, 0.68]
+# 上帯のネジは底から通し、基板と一緒に上帯の樹脂カバー（裏の柱 φ6）を留める。
+# ケースの裏で、奥のゴム足 2 つ（ケース外形の左右の端から 20 mm、gen_assembly.py）の間に等間隔で 3 つ並べる
+FOOT_FROM_CASE_EDGE_MM = 20.0
+CASE_OUTSIDE_PCB_MM = 1.0 + 0.5 + 3.0  # 基板の外周 + 隙間 + 壁（gen_assembly.py の EDGE_MARGIN / CASE_GAP / CASE_WALL）
+BAT_CONNECTOR_FROM_RIGHT_MM = 96.0  # 電池コネクタ（裏）。右のカバーのネジとネジ受けの間
 COVER_CLEAR_TOP_MM = 3.2
 # 中央は裏の部品が密でネジを通せないため、ケース底の柱（φ3、上にゴム足）で下から支えるだけにする
 SUPPORT_CLEAR_BOTTOM_MM = 1.7
@@ -242,12 +245,15 @@ def main():
 
     # 電池は上帯の下に置くので、背の低い横向きのコネクタ（高さ 約 4.8 mm）を裏面に
     b.place(load(STOCK_LIB / "Connector_JST.pretty", "JST_PH_S2B-PH-K_1x02_P2.00mm_Horizontal"), "J_BAT",
-            width - 78.0, strip_y - 3.0, back=True, pads={"1": "BAT+", "2": "GND"})
+            width - BAT_CONNECTOR_FROM_RIGHT_MM, strip_y - 3.0, back=True, pads={"1": "BAT+", "2": "GND"})
 
     antenna = (end - 7.0, -TOP_STRIP_MM, mcu_x - XIAO_ANTENNA_MM, 0.0)
     targets = [(width * fx, height * fy) for fx, fy in MOUNT_TARGETS]
     holes = find_spots(b, data["keys"], targets, MOUNT_CLEAR_TOP_MM, MOUNT_CLEAR_BOTTOM_MM, [antenna], width, height)
-    covers = find_spots(b, data["keys"], [(width * fx, strip_y) for fx in COVER_STRIP_X],
+    foot_l = FOOT_FROM_CASE_EDGE_MM - CASE_OUTSIDE_PCB_MM
+    foot_r = width + CASE_OUTSIDE_PCB_MM - FOOT_FROM_CASE_EDGE_MM
+    cover_xs = [foot_l + (foot_r - foot_l) * k / 4 for k in (1, 2, 3)]
+    covers = find_spots(b, data["keys"], [(x, strip_y) for x in cover_xs],
                         COVER_CLEAR_TOP_MM, MOUNT_CLEAR_BOTTOM_MM, [antenna], width, height)
     supports = find_spots(b, data["keys"], [(width * fx, height * fy) for fx, fy in SUPPORT_TARGETS],
                           None, SUPPORT_CLEAR_BOTTOM_MM, [antenna], width, height)

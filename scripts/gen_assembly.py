@@ -20,7 +20,7 @@ import sys
 from pathlib import Path
 
 from build123d import (Align, Axis, Box, Plane, BuildPart, BuildSketch, Compound, Cylinder, Location, Locations, Mode,
-                       RectangleRounded, ExportSVG, Unit, export_gltf, export_step, extrude, fillet)
+                       RectangleRounded, Rectangle, ExportDXF, ExportSVG, Unit, export_gltf, export_step, extrude, fillet)
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import gen_keycaps as kc  # noqa: E402
@@ -252,6 +252,15 @@ def main():
     svg.add_layer("marking", fill_color=(0, 0, 0), line_color=(0, 0, 0))
     svg.add_shape(mark_sketch, layer="marking")
     svg.write(str(out.parent / "case_marking.svg"))
+    # 同じ刻印の DXF。JLCCNC のレーザー刻印は DWG/DXF が必須なので、奥の面の外形と刻印を 1:1 で描く。
+    # 原点は奥から見た外形の左下（左端 = ケースの右側面）
+    dxf = ExportDXF(unit=Unit.MM)
+    dxf.add_layer("BACK_FACE_OUTLINE")
+    dxf.add_layer("LASER_MARKING")
+    dxf.add_shape(Rectangle(ox1 - ox0, DECK_Z - FLOOR_BACK, align=(Align.MIN, Align.MIN)).edges(),
+                  layer="BACK_FACE_OUTLINE")
+    dxf.add_shape(mark_sketch.translate((ox1 - mark_center[0], mark_center[1] - FLOOR_BACK, 0)), layer="LASER_MARKING")
+    dxf.write(str(out.parent / "case_marking.dxf"))
     for name in ["board", *groups]:
         glb = out / f"{name}.glb"
         if name == "board":

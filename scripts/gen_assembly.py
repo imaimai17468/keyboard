@@ -145,7 +145,8 @@ def main():
             for (w, h, t), z in ((SW_BASE, 0.0), (SW_TOP, SW_BASE[2]), (SW_STEM, SW_BASE[2] + SW_TOP[2])):
                 switches.append(Box(w, h, t, align=(Align.CENTER, Align.CENTER, Align.MIN))
                                 .moved(Location((sx, sy, z))))
-        cap, mark = kc.keycap(k["rects"], k["switches"], lg.legend(k, width), engrave=False)
+        cap, mark = kc.keycap(k["rects"], k["switches"], lg.legend(k, width), engrave=False,
+                              homing=k["label"] in kc.HOMING_KEYS)
         caps.append(cap.moved(Location((kx, ky, CAP_Z))))
         if mark is not None:
             legends.append(mark.moved(Location((kx, ky, CAP_Z + 0.02))))  # 上面と重ならないよう少し浮かせる

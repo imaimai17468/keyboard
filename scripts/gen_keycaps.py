@@ -17,7 +17,7 @@ import sys
 from pathlib import Path
 
 from build123d import (Align, Axis, Box, BuildPart, BuildSketch, ExportSVG, Location, Locations, Mode,
-                       Plane, Rectangle, Text, Unit, export_step, export_stl, extrude, fillet, insert, offset)
+                       Plane, Rectangle, SlotCenterToCenter, Text, Unit, export_step, export_stl, extrude, fillet, insert, offset)
 
 sys.path.insert(0, str(Path(__file__).parent))
 import legends  # noqa: E402
@@ -35,7 +35,10 @@ TOP_Z = UNDERSIDE_Z + TOP_T
 WALL_T = 1.2             # JLC3DP の推奨最小肉厚
 CORNER_R = 1.5
 LEGEND_DEPTH = 0.4
-FONT = "/System/Library/Fonts/ヒラギノ角ゴシック W6.ttc"
+HOMING = (4.0, 1.0, 0.5)  # F・J の天板のポッチ (長さ, 幅, 高さ)。JLC3DP の最小 0.8 mm より太く
+HOMING_Y = -5.6           # ポッチの位置（キー中心から下へ。刻印の英字は ±2.1 mm 以内）
+HOMING_KEYS = ("F", "J")
+FONT ="/System/Library/Fonts/ヒラギノ角ゴシック W6.ttc"
 
 
 def outline(rects, inset):
@@ -48,9 +51,10 @@ def outline(rects, inset):
     return sk.sketch
 
 
-def keycap(rects, stems, legend="", legend_size=4.0, stem_w=STEM_W, engrave=True, under=""):
+def keycap(rects, stems, legend="", legend_size=4.0, stem_w=STEM_W, engrave=True, under="", homing=False):
     """rects の外形のキーキャップ。stems はキー中心からのスイッチ位置 (mm, y 下向き) のリスト。
     legend は文字列（中央に legend_size で彫る）か、legends.legend() の面。
+    homing=True のとき天板の手前寄りに指で探せるポッチ（角の丸い棒）を足す。
 
     engrave=False のときは彫らずに (本体, 刻印部分の立体) を返す。完成図で刻印の色を切り替えるため。
     under は天板の裏に彫る小さな文字（試作の見分け用。下から読めるよう左右反転）。
@@ -74,6 +78,13 @@ def keycap(rects, stems, legend="", legend_size=4.0, stem_w=STEM_W, engrave=True
             with BuildSketch(Plane.XY.offset(UNDERSIDE_Z).rotated((180, 0, 0)).moved(Location((0, -4.8, 0)))):
                 Text(under, 2.2, font_path=FONT)
             extrude(amount=-0.3, mode=Mode.SUBTRACT)
+        if homing:
+            hl, hw, hh = HOMING
+            with BuildPart(mode=Mode.ADD) as bump:
+                with BuildSketch(Location((0, HOMING_Y, TOP_Z - 0.1))):
+                    SlotCenterToCenter(hl - hw, hw)
+                extrude(amount=hh + 0.1)
+                fillet(bump.edges().group_by(Axis.Z)[-1], hh * 0.6)
     cap = p.part
     if not legend:
         return cap if engrave else (cap, None)
@@ -130,7 +141,7 @@ def main():
     preview(keys, width, full / "legends.svg")
     for k in keys:
         name = re.sub(r"[^A-Za-z0-9]", "", k["label"])
-        export(keycap(k["rects"], k["switches"], legends.legend(k, width)),
+        export(keycap(k["rects"], k["switches"], legends.legend(k, width), homing=k["label"] in HOMING_KEYS),
                full / (f"{k['id']:02d}_{name}" if name else f"{k['id']:02d}"))
 
 

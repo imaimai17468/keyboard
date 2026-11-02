@@ -169,14 +169,14 @@ ul { margin: 0; padding-left: 1.1em; font-size: 0.85rem; display: grid; gap: 4px
     <section class="group" aria-labelledby="h-open">
       <h2 id="h-open">まだ決まっていないこと</h2>
       <ul>
-        <li>キーキャップの軸の太さ（試作で決める）</li>
+        <li>なし（キーキャップの軸の太さは試作で 1.25 mm に決定）</li>
       </ul>
     </section>
   </div>
   <section class="buy" aria-labelledby="h-buy">
     <header>
       <h2 id="h-buy">購入リスト</h2>
-      <p class="note">価格は 2026-10-20 時点。JLC は見積もり画面の金額（注文はまだ）</p>
+      <p class="note">2026-11-02 に全部注文済み。価格は 2026-10-20 の見積もり（実際の支払額は各店の注文履歴）。JLC は 1 回の注文が 50 件までなので 2 回に分けた</p>
     </header>
     <div class="cat">
       <h3>JLC で作るもの</h3>
@@ -184,16 +184,16 @@ ul { margin: 0; padding-left: 1.1em; font-size: 0.85rem; display: grid; gap: 4px
         <div class="store">
           <h4>JLC3DP<span>¥15,554</span></h4>
           <ul class="items">
-          <li><a href="https://jlc3dp.com/3d-printing-quote" target="_blank" rel="noopener">キーキャップ 1u × 75（Black Resin）</a><span class="price">¥12,821</span><span class="use">1 個 ¥171。軸の太さは試作の結果で決めてから発注</span></li>
-          <li><a href="https://jlc3dp.com/3d-printing-quote" target="_blank" rel="noopener">キーキャップ 大きいキー × 6</a><span class="price">¥1,065</span><span class="use">tab ¥173、control・右 shift ¥174、左 shift ¥177、return ¥179、space ¥188</span></li>
-          <li><a href="https://jlc3dp.com/3d-printing-quote" target="_blank" rel="noopener">上帯カバー（Black Resin、厚さ 2 mm）</a><span class="price">¥524</span><span class="use">長さ 290 mm</span></li>
+          <li><a href="https://jlc3dp.com/3d-printing-quote" target="_blank" rel="noopener">キーキャップ 1u × 75（Black Resin）</a><span class="price">¥12,821</span><span class="use">1 個 ¥171。軸 1.25 mm（試作で決定）。F・J は天板にポッチ付き <span class="done">注文済み</span></span></li>
+          <li><a href="https://jlc3dp.com/3d-printing-quote" target="_blank" rel="noopener">キーキャップ 大きいキー × 6</a><span class="price">¥1,065</span><span class="use">tab ¥173、control・右 shift ¥174、左 shift ¥177、return ¥179、space ¥188 <span class="done">注文済み</span></span></li>
+          <li><a href="https://jlc3dp.com/3d-printing-quote" target="_blank" rel="noopener">上帯カバー（Black Resin、厚さ 2 mm）</a><span class="price">¥524</span><span class="use">長さ 290 mm <span class="done">注文済み</span></span></li>
           <li><span>送料（OCS Express、0.27 kg）</span><span class="price">¥1,144</span><span class="use">4〜6 営業日</span></li>
           </ul>
         </div>
         <div class="store">
           <h4>JLCPCB<span>$34.71 ≈ ¥5,311</span></h4>
           <ul class="items">
-          <li><a href="https://cart.jlcpcb.com/quote" target="_blank" rel="noopener">基板 × 5 枚（2 層・1.6 mm・黒・鉛フリー HASL）</a><span class="price">$24.90</span><span class="use">287.75 × 136.3 mm。製造 3 日</span></li>
+          <li><a href="https://cart.jlcpcb.com/quote" target="_blank" rel="noopener">基板 × 5 枚（2 層・1.6 mm・黒・鉛フリー HASL）</a><span class="price">$24.90</span><span class="use">287.75 × 136.3 mm。製造 3 日 <span class="done">注文済み</span></span></li>
           <li><span>送料（UPS、0.81 kg）</span><span class="price">$9.81</span><span class="use">2〜4 営業日</span></li>
           </ul>
         </div>
@@ -201,7 +201,7 @@ ul { margin: 0; padding-left: 1.1em; font-size: 0.85rem; display: grid; gap: 4px
           <h4>JLCCNC<span>$126.22 ≈ ¥19,312</span></h4>
           <ul class="items">
           <li><a href="https://jlccnc.com/cnc-machining-quote" target="_blank" rel="noopener">アルミケース（6061、ビーズブラスト + アルマイト Natural・マット）</a><span class="price">$116.41</span><span class="use">ネジ穴と底の段を直したデータで取り直した金額。最終価格は JLC の審査後に確定</span></li>
-          <li><span>送料（UPS、0.58 kg）</span><span class="price">$9.81</span><span class="use">2〜4 営業日。M2 めねじ 7 か所は図面（case_drawing.pdf）、奥の面のアイコンと @imaimai17468 のレーザー刻印は図面（case_marking_drawing.pdf と case_marking.svg）を付けて指定する。追加費用は審査で決まる</span></li>
+          <li><span>送料（UPS、0.58 kg）</span><span class="price">$9.81</span><span class="use">2〜4 営業日。M2 めねじ 7 か所は図面（case_drawing.pdf）、奥の面のアイコンと @imaimai17468 のレーザー刻印は DXF（case_marking.dxf、JLCCNC は DWG/DXF 必須）と図面 case_marking_drawing.pdf で指定。追加費用は審査で決まる <span class="done">注文済み</span></span></li>
           </ul>
         </div>
       </div>
@@ -210,18 +210,18 @@ ul { margin: 0; padding-left: 1.1em; font-size: 0.85rem; display: grid; gap: 4px
       <h3>電子部品</h3>
       <div class="stores">
         <div class="store">
-          <h4>遊舎工房<span>未購入分 ¥18,073 + 送料 ¥550</span></h4>
+          <h4>遊舎工房<span>¥12,683 + 送料</span></h4>
           <ul class="items">
           <li><a href="https://shop.yushakobo.jp/products/10946" target="_blank" rel="noopener">Seeed Studio XIAO nRF52840 Plus</a><span class="price">¥2,200 × 1</span><span class="use">無線マイコン。予備が欲しければもう 1 個（壊したときの作り直しが早い） <span class="done">購入済み</span></span></li>
-          <li><a href="https://shop.yushakobo.jp/collections/choc-v1/products/ambients-silent-choc-switches-20g-linear-nocturnal" target="_blank" rel="noopener">Kailh Ambients Silent Choc V1 Nocturnal 20g（35 個入り）</a><span class="price">¥5,390 × 3</span><span class="use">スイッチ 85 個 + 予備。試作用に買った袋があれば差し引く</span></li>
-          <li><a href="https://shop.yushakobo.jp/products/a01ps" target="_blank" rel="noopener">Kailh Switch Socket（10 個入り）</a><span class="price">¥187 × 9</span><span class="use">ホットスワップソケット 85 個 + 予備。種類は「Choc（CPG135001S30）」を選ぶ</span></li>
-          <li><a href="https://shop.yushakobo.jp/products/a0800di-02-100" target="_blank" rel="noopener">ダイオード - SMDタイプ（100 個入り）</a><span class="price">¥220</span><span class="use">1N4148W × 81</span></li>
+          <li><a href="https://shop.yushakobo.jp/collections/choc-v1/products/ambients-silent-choc-switches-20g-linear-nocturnal" target="_blank" rel="noopener">Kailh Ambients Silent Choc V1 Nocturnal 20g（35 個入り）</a><span class="price">¥5,390 × 2</span><span class="use">スイッチ 85 個 + 予備。試作用に買った 1 袋と合わせて 105 個 <span class="done">注文済み</span></span></li>
+          <li><a href="https://shop.yushakobo.jp/products/a01ps" target="_blank" rel="noopener">Kailh Switch Socket（10 個入り）</a><span class="price">¥187 × 9</span><span class="use">ホットスワップソケット 85 個 + 予備。種類は「Choc（CPG135001S30）」を選ぶ <span class="done">注文済み</span></span></li>
+          <li><a href="https://shop.yushakobo.jp/products/a0800di-02-100" target="_blank" rel="noopener">ダイオード - SMDタイプ（100 個入り）</a><span class="price">¥220</span><span class="use">1N4148W × 81。手ではんだ付け <span class="done">注文済み</span></span></li>
           </ul>
         </div>
         <div class="store">
           <h4>Amazon<span>¥1,199</span></h4>
           <ul class="items">
-          <li><a href="https://www.amazon.co.jp/dp/B08FD3V6TF" target="_blank" rel="noopener">EEMB 3.7V 502030 250mAh リポバッテリー</a><span class="price">¥1,199</span><span class="use">電池。コネクタは切って線を基板の穴に直接はんだ付け（赤 = 1 番ピン +）</span></li>
+          <li><a href="https://www.amazon.co.jp/dp/B08FD3V6TF" target="_blank" rel="noopener">EEMB 3.7V 502030 250mAh リポバッテリー</a><span class="price">¥1,199</span><span class="use">電池。コネクタは切って線を基板の穴に直接はんだ付け（赤 = 1 番ピン +） <span class="done">注文済み</span></span></li>
           </ul>
         </div>
       </div>
@@ -232,20 +232,20 @@ ul { margin: 0; padding-left: 1.1em; font-size: 0.85rem; display: grid; gap: 4px
         <div class="store">
           <h4>Amazon<span>¥4,995</span></h4>
           <ul class="items">
-          <li><a href="https://www.amazon.co.jp/dp/B0B2ZM6G8H" target="_blank" rel="noopener">ステンレス/SSブラック ナベ小ねじ M2×3（10 本）</a><span class="price">¥680</span><span class="use">基板をケースに留める × 7。黒いネジで基板・キーキャップの黒になじむ。めねじは有効 1.5 mm なので 3 mm（基板 1.6 + 1.4）</span></li>
-          <li><a href="https://www.amazon.co.jp/dp/B079WL3BDD" target="_blank" rel="noopener">ステンレス ナベ頭 小ねじ M2×10（10 本）</a><span class="price">¥600</span><span class="use">底から上帯カバーを留める × 3</span></li>
-          <li><a href="https://www.amazon.co.jp/dp/B0CTTLJL6S" target="_blank" rel="noopener">uxcell インサートナット M2 3×3 mm（100 個）</a><span class="price">¥852</span><span class="use">カバーの柱 × 3。樹脂のカバーは熱で溶けないので接着で入れる</span></li>
-          <li><a href="https://www.amazon.co.jp/dp/B003SJVNQ0" target="_blank" rel="noopener">セメダイン ハイスーパー5（6 g）</a><span class="price">¥427</span><span class="use">インサートの接着用（5 分硬化エポキシ）</span></li>
-          <li><a href="https://www.amazon.co.jp/dp/B07V8RDJTH" target="_blank" rel="noopener">ゴム足 φ10 × 高さ 4 mm（16 個）</a><span class="price">¥598</span><span class="use">手前の足 × 2</span></li>
-          <li><a href="https://www.amazon.co.jp/dp/B00V5MQQ5A" target="_blank" rel="noopener">3M クッションゴム CS-01 φ7.9 × 2.2 mm（22 粒）</a><span class="price">¥344</span><span class="use">奥の足 × 2。奥が 1.2 mm 高くなり、手前に少し傾く</span></li>
-          <li><a href="https://www.amazon.co.jp/dp/B08JYBJ43B" target="_blank" rel="noopener">DanYun カプトンテープ 15 mm × 33 m</a><span class="price">¥645</span><span class="use">電池の下の絶縁と、中央の支え柱の上に貼る</span></li>
-          <li><a href="https://www.amazon.co.jp/dp/B09V358S45" target="_blank" rel="noopener">3M スコッチ 強力両面テープ 15 mm × 10 m（PSD-15R）</a><span class="price">¥849</span><span class="use">電池をケースの底に貼る</span></li>
+          <li><a href="https://www.amazon.co.jp/dp/B0B2ZM6G8H" target="_blank" rel="noopener">ステンレス/SSブラック ナベ小ねじ M2×3（10 本）</a><span class="price">¥680</span><span class="use">基板をケースに留める × 7。黒いネジで基板・キーキャップの黒になじむ。めねじは有効 1.5 mm なので 3 mm（基板 1.6 + 1.4） <span class="done">注文済み</span></span></li>
+          <li><a href="https://www.amazon.co.jp/dp/B079WL3BDD" target="_blank" rel="noopener">ステンレス ナベ頭 小ねじ M2×10（10 本）</a><span class="price">¥600</span><span class="use">底から上帯カバーを留める × 3 <span class="done">注文済み</span></span></li>
+          <li><a href="https://www.amazon.co.jp/dp/B0CTTLJL6S" target="_blank" rel="noopener">uxcell インサートナット M2 3×3 mm（100 個）</a><span class="price">¥852</span><span class="use">カバーの柱 × 3。樹脂のカバーは熱で溶けないので接着で入れる <span class="done">注文済み</span></span></li>
+          <li><a href="https://www.amazon.co.jp/dp/B003SJVNQ0" target="_blank" rel="noopener">セメダイン ハイスーパー5（6 g）</a><span class="price">¥427</span><span class="use">インサートの接着用（5 分硬化エポキシ） <span class="done">注文済み</span></span></li>
+          <li><a href="https://www.amazon.co.jp/dp/B07V8RDJTH" target="_blank" rel="noopener">ゴム足 φ10 × 高さ 4 mm（16 個）</a><span class="price">¥598</span><span class="use">手前の足 × 2 <span class="done">注文済み</span></span></li>
+          <li><a href="https://www.amazon.co.jp/dp/B00V5MQQ5A" target="_blank" rel="noopener">3M クッションゴム CS-01 φ7.9 × 2.2 mm（22 粒）</a><span class="price">¥344</span><span class="use">奥の足 × 2。奥が 1.2 mm 高くなり、手前に少し傾く <span class="done">注文済み</span></span></li>
+          <li><a href="https://www.amazon.co.jp/dp/B08JYBJ43B" target="_blank" rel="noopener">DanYun カプトンテープ 15 mm × 33 m</a><span class="price">¥645</span><span class="use">電池の下の絶縁と、中央の支え柱の上に貼る <span class="done">注文済み</span></span></li>
+          <li><a href="https://www.amazon.co.jp/dp/B09V358S45" target="_blank" rel="noopener">3M スコッチ 強力両面テープ 15 mm × 10 m（PSD-15R）</a><span class="price">¥849</span><span class="use">電池をケースの底に貼る <span class="done">注文済み</span></span></li>
           </ul>
         </div>
       </div>
     </div>
     <div class="cat">
-      <h3>合計（これから払う分）</h3>
+      <h3>合計（2026-10-20 の見積もり）</h3>
       <dl class="totals">
         <dt>JLC（3 社、送料込み）</dt><dd>¥40,177</dd>
         <dt>遊舎工房（送料込み）</dt><dd>¥18,623</dd>

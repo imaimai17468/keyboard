@@ -1,6 +1,6 @@
 # 仕様書（ドラフト）
 
-最終更新: 2026-11-02
+最終更新: 2026-11-21
 
 ## 1. 確定事項
 
@@ -52,7 +52,7 @@ D16 (P0.31) は電池電圧の測定につながっているので使わず、�
 - 行ピン: D0〜D6, D11, D12
 - 列ピン: D7〜D10, D13, D14, D15, D17, D18（D14/D15 は NFC ピンを GPIO として使用）
 - ピンの対応は Seeed の Arduino variant（Seeed_XIAO_nRF52840_Plus/variant.cpp）と KiCad シンボルのピン番号から。
-  公式 Wiki の図は D17 (P1.07) と D19 (P1.03) が入れ替わっているという報告があるため、実機で確かめる
+  ただし D17 と D19 は実機で入れ替わっていた（2026-11-21 確認）。フットプリントで D17 と書かれたパッド（列 C7）は P1.03、D19 のパッドは P1.07。`scripts/matrix.py` はこの実機の対応で書いている
 
 ## 4. 未解決事項（ブロッカー）
 
@@ -134,7 +134,7 @@ D16 (P0.31) は電池電圧の測定につながっているので使わず、�
 | 配列 | KLE 形式 JSON（`layout/*.kle.json`）→ `scripts/build_layouts.sh` → `build/<案>/keys.json`（mm 座標）・プレビュー PNG |
 | 基板 | KiCad 10（`brew install --cask kicad`）+ Freerouting 2.5（`~/.local/share/freerouting/`、要 `brew install openjdk`）。`scripts/build_pcb.sh` |
 | ケース・キーキャップ | build123d（Python、`uv venv .venv` に導入）で STEP / STL 出力 → JLCCNC・JLC3DP |
-| ファーム | ZMK v0.3.0 + zmk-rgbled-widget v0.3（ボード `seeeduino_xiao_ble`、シールド `macjis rgbled_adapter`。`firmware/`、`scripts/gen_zmk.py` で overlay / keymap を生成、`.github/workflows/zmk.yml` でビルド）。soft off・状態ランプ込みでローカルビルド確認済み、実機未確認 |
+| ファーム | ZMK v0.3.0 + zmk-rgbled-widget v0.3（ボード `seeeduino_xiao_ble`、シールド `macjis rgbled_adapter`。`firmware/`、`scripts/gen_zmk.py` で overlay / keymap を生成、`.github/workflows/zmk.yml` でビルド）。soft off・状態ランプ込みでローカルビルド・GitHub Actions のビルド確認済み。XIAO 単体で書き込み、USB 認識・状態ランプ・Bluetooth の発見を確認（2026-11-21）。基板に付けて USB でキー入力を確認中 |
 
 `build/<案>/keys.json` を配列の単一の情報源とし、KiCad の部品配置・ZMK の物理レイアウト・ケース外形はここから生成する。
 
@@ -144,5 +144,5 @@ D16 (P0.31) は電池電圧の測定につながっているので使わず、�
 2. ~~キーキャップ試作（JLC3DP）とスイッチ購入 → 軸の公差と長いキーの感触を確認~~（2026-10-28）
 3. ~~基板（KiCad）: 自動生成・自動配線・DRC のパイプライン → ネジ穴追加 → 1:1 印刷で実物合わせ → JLCPCB 発注~~（2026-11-02 発注）
 4. ~~ケース（アンテナ窓・バッテリー・USB-C 開口）→ JLCCNC 見積もり・発注~~（2026-11-02 発注）。キーキャップ・上帯カバーも JLC3DP に発注、部品は遊舎工房・Amazon で購入
-5. ~~ZMK ファーム作成~~（ローカルビルド済み。GitHub Actions・実機は未確認）
-6. 組み立て・動作確認 ← いまここ（荷物待ち）
+5. ~~ZMK ファーム作成~~（実機で起動・Bluetooth・キー入力を確認。D17 のピンを P1.03 に修正）
+6. 組み立て・動作確認 ← いまここ（ダイオード・ソケットのはんだ付け済み、2026-11-21）

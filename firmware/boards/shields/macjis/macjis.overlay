@@ -33,7 +33,7 @@
             , <&gpio1 1 GPIO_ACTIVE_HIGH>  /* COL4 = D13 */
             , <&gpio0 9 GPIO_ACTIVE_HIGH>  /* COL5 = D14 */
             , <&gpio0 10 GPIO_ACTIVE_HIGH>  /* COL6 = D15 */
-            , <&gpio1 7 GPIO_ACTIVE_HIGH>  /* COL7 = D17 */
+            , <&gpio1 3 GPIO_ACTIVE_HIGH>  /* COL7 = D17 */
             , <&gpio1 5 GPIO_ACTIVE_HIGH>  /* COL8 = D18 */
             ;
     };

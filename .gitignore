@@ -6,3 +6,4 @@ fp-info-cache
 .venv/
 __pycache__/
 .yomiyasu/
+*.tsuzuri/

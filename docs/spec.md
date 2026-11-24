@@ -109,7 +109,8 @@ D16 (P0.31) は電池電圧の測定につながっているので使わず、�
 - 底は 2 段: キーの下はソケットが入るだけ（基板の裏から 2.5 mm）、上帯の下だけ 5.5 mm 張り出して電池を入れる。裏面も削るので加工は 2 工程
 - ゴム足: 手前 φ10 × 4 mm、奥 φ7.9 × 2.2 mm（3M CS-01）。奥が 1.2 mm 高く、手前に少し傾く
 - 上帯（MCU の上）は樹脂のカバーで覆い、アンテナ窓を兼ねる。リセット用の穴あり
-- 側面の穴: USB-C（右、11 × 6 mm）だけ。ここだけ横からの加工になる
+- 側面の穴: USB-C（右、11 × 6 mm）だけ。ここだけ横からの加工になる。**この穴ではふつうの USB-C ケーブルが挿さらなかった**（2026-11 に判明。今のケースは穴をやすりで削って広げた）。XIAO の USB の入口がケースの外側の面から 3.5 mm 奥（壁 3 + すき間 0.5 mm）にあり、プラグの根元（最大 12.35 × 6.5 mm）まで穴に入らないと届かないため。次の版では穴を 13 × 7 mm 以上にし、USB の前の壁を内側から削り込む
+- 最初のカバーは JLC3DP の造形で約 1.45 mm 大きく出来て（設計 290.55 mm、実測 約 292 mm）、ケースの段（実測 約 290.5 mm、設計 290.75 mm）に入らなかった。今のカバーは左右の端を耐水ペーパーで削って段に合わせた。次に造形するときは、膨らみを差し引いた横幅 288.6 mm・奥行き 21.8 mm で作る（`gen_assembly.py` の `COVER_PRINT_GROWTH`・`COVER_CLEAR_SIDE`・`COVER_CLEAR_BACK`）
 - 上帯カバー: ケース内壁の段 (1 mm) に載せ、裏の柱 φ6（M2 インサートを接着）3 本を底からのネジで留める。上から見えるネジは無い。XIAO のリセットボタン用の穴 φ2 と状態ランプの穴 φ1.5 あり（位置は Seeed の基板データから。実物で確認する）
 - 底からネジ受けの柱（φ4）10 本: 基板用 7 本は M2×0.4 6H めねじ（下穴 2.5 mm・有効 1.5 mm、底面まで 2 mm 残す）、カバー用 3 本は貫通 + 底面にザグリ。支え柱（φ3）3 本
 - 奥の面の中央にレーザー刻印: アイコンの線画（assets/icon_frog.png の黒い線を potrace で輪郭にしたもの）と @imaimai17468、約 50.7 × 11.5 mm（`scripts/marking.py`）。形は変えないので STEP には入れず、図面 `build/assembly/case_marking_drawing.pdf` と原寸の DXF `case_marking.dxf`（JLCCNC のレーザー刻印は DWG/DXF が必須。奥の面の外形 294.75 × 18.1 mm と刻印を 1:1 で描いたもの。`scripts/gen_assembly.py` が SVG と一緒に書き出す）で指定する。銀のアルマイトでは刻印は薄い灰色で控えめに出る
@@ -134,7 +135,7 @@ D16 (P0.31) は電池電圧の測定につながっているので使わず、�
 | 配列 | KLE 形式 JSON（`layout/*.kle.json`）→ `scripts/build_layouts.sh` → `build/<案>/keys.json`（mm 座標）・プレビュー PNG |
 | 基板 | KiCad 10（`brew install --cask kicad`）+ Freerouting 2.5（`~/.local/share/freerouting/`、要 `brew install openjdk`）。`scripts/build_pcb.sh` |
 | ケース・キーキャップ | build123d（Python、`uv venv .venv` に導入）で STEP / STL 出力 → JLCCNC・JLC3DP |
-| ファーム | ZMK v0.3.0 + zmk-rgbled-widget v0.3（ボード `seeeduino_xiao_ble`、シールド `macjis rgbled_adapter`。`firmware/`、`scripts/gen_zmk.py` で overlay / keymap を生成、`.github/workflows/zmk.yml` でビルド）。soft off・状態ランプ込みでローカルビルド・GitHub Actions のビルド確認済み。XIAO 単体で書き込み、USB 認識・状態ランプ・Bluetooth の発見を確認（2026-11-21）。基板に付けて USB でキー入力を確認中 |
+| ファーム | ZMK v0.3.0 + zmk-rgbled-widget v0.3（ボード `seeeduino_xiao_ble`、シールド `macjis rgbled_adapter`。`firmware/`、`scripts/gen_zmk.py` で overlay / keymap を生成、`.github/workflows/zmk.yml` でビルド）。soft off・状態ランプ込みでローカルビルド・GitHub Actions のビルド確認済み。XIAO 単体で書き込み、USB 認識・状態ランプ・Bluetooth の発見を確認（2026-11-21）。基板に付けて USB で全 81 キーの入力を確認（2026-11-21） |
 
 `build/<案>/keys.json` を配列の単一の情報源とし、KiCad の部品配置・ZMK の物理レイアウト・ケース外形はここから生成する。
 

@@ -64,6 +64,11 @@ COUNTERBORE_D = 4.2       # カバー用ネジ（底から入れる）の頭の�
 COVER_POST_D = 6.0        # カバー裏の柱。M2 の熱圧入インサート (φ3.2 × 3 mm) を埋める
 INSERT_D, INSERT_DEPTH = 3.2, 4.0
 COVER_LEDGE = 1.0         # カバーを載せるケース内壁の段の幅
+# カバーとケースの段の隙間。最初のカバー（設計 290.55 mm）は JLC3DP の造形で約 292 mm に膨らみ、
+# 段（実測 約 290.5 mm）に入らなかった（2026-11）。横幅はその膨らみ (COVER_PRINT_GROWTH) を差し引いて作る
+COVER_CLEAR_SIDE = 0.35
+COVER_CLEAR_BACK = 0.4
+COVER_PRINT_GROWTH = 1.45
 LED_HOLE_D = 1.5
 # XIAO 中心から 3 色 LED とリセットボタンまで（y 上向き）。Seeed の XIAO nRF52840 v1.3 の基板データから
 LED_OFFSET = (7.68, -5.71)
@@ -202,8 +207,10 @@ def main():
     led = (mcu_x + LED_OFFSET[0], strip_y + LED_OFFSET[1])
     reset = (mcu_x + RESET_OFFSET[0], strip_y + RESET_OFFSET[1])
     with BuildPart() as cover:
-        with BuildSketch(Location(((ix0 + ix1) / 2, (cover_y0 + iy1 + COVER_LEDGE) / 2, cover_z))):
-            RectangleRounded(ix1 - ix0 + 2 * COVER_LEDGE - 0.2, iy1 + COVER_LEDGE - cover_y0 - 0.1, INNER_R)
+        cover_y1 = iy1 + COVER_LEDGE - COVER_CLEAR_BACK
+        with BuildSketch(Location(((ix0 + ix1) / 2, (cover_y0 + cover_y1) / 2, cover_z))):
+            RectangleRounded(ix1 - ix0 + 2 * COVER_LEDGE - 2 * COVER_CLEAR_SIDE - COVER_PRINT_GROWTH,
+                             cover_y1 - cover_y0, INNER_R)
         extrude(amount=COVER_T)
         for x, y in covers:  # 裏の柱（基板の上面まで）とインサートの穴
             with Locations((x, y, 0)):

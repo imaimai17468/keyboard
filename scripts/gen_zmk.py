@@ -12,11 +12,12 @@ from pathlib import Path
 
 SHIELD = "macjis"
 PITCH = 19.05
+WAKE_KEY = "esc"  # soft off から復帰させるキー（このキーだけで起きる）
 
 # 物理行ごとの (刻印, MAC_BASE, FN)。刻印は matrix.json と一致するか検査する。
 # FN の "___" は &trans。MacBook と同じく F 列は通常メディアキー、fn+F 列で F1-F12。
 KEYMAP = [
-    [("esc", "&kp ESC", "&soft_off_hold"),  # fn+esc 長押しで電源オフ（どのキーでも復帰）
+    [("esc", "&kp ESC", "&soft_off_hold"),  # fn+esc 長押しで電源オフ、esc で復帰
      ("F1", "&kp C_BRI_DN", "&kp F1"),
      ("F2", "&kp C_BRI_UP", "&kp F2"),
      ("F3", "&kp C_AC_DESKTOP_SHOW_ALL_WINDOWS", "&kp F3"),
@@ -142,6 +143,10 @@ def overlay(keys, matrix):
         for p in matrix["col_pins"])
     rc = "\n".join(by_rows(keys, lambda k: f"RC({k['row']},{k['col']})"))
     attrs = "\n            , ".join(physical_attrs(k) + f"  /* {k['label']} */" for k in keys)
+    # 電源を入れるキー（esc）の行と列のピン
+    assert matrix["diode_direction"] == "col2row"
+    wake = next(k for k in keys if k["label"] == WAKE_KEY)
+    wake_row, wake_col = matrix["row_pins"][wake["row"]], matrix["col_pins"][wake["col"]]
     return f"""/* scripts/gen_zmk.py で生成。直接編集しない */
 
 #include <dt-bindings/zmk/matrix_transform.h>
@@ -187,10 +192,26 @@ def overlay(keys, matrix):
 }};
 
 / {{
-    /* 電源スイッチは無い。&soft_off で切り、キーを押すと復帰する（kscan を復帰元にする） */
+    /* 電源スイッチは無い。fn+esc の長押し（&soft_off_hold）で切り、esc を押したときだけ復帰する。
+       マトリクス全体を復帰元にするとどのキーでも起きるので、esc の行のピンだけを見張り、
+       esc の列のピンだけを出力にする（col2row。ZMK の soft-off-setup の「wakeup-only key switch」） */
+    soft_off_gpio_keys {{
+        compatible = "gpio-keys";
+        soft_off_wake_key: soft_off_wake_key {{
+            gpios = <{gpio(wake_row)} (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>;  /* {wake_row['net']} = {wake_row['pin']} */
+        }};
+    }};
+
+    wakeup_key: wakeup_key {{
+        compatible = "zmk,gpio-key-wakeup-trigger";
+        trigger = <&soft_off_wake_key>;
+        wakeup-source;
+        extra-gpios = <{gpio(wake_col)} GPIO_ACTIVE_HIGH>;  /* {wake_col['net']} = {wake_col['pin']} */
+    }};
+
     soft_off_wakers {{
         compatible = "zmk,soft-off-wakeup-sources";
-        wakeup-sources = <&kscan0>;
+        wakeup-sources = <&wakeup_key>;
     }};
 
 }};

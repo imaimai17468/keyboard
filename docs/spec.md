@@ -13,7 +13,7 @@
 | キーキャップ | 自作（build123d で設計し JLC3DP で造形）。Choc V1 軸、約 18 mm 角。黒（Black Resin）、刻印は彫り込みのみ（色は入れない）。刻印は MacBook の JIS 配列と同じでかなは無し（`scripts/legends.py`、一覧 `build/keycaps/set/legends.png`）。F・J の天板の手前に指で探せるポッチ（4.0 × 1.0 × 高さ 0.5 mm） |
 | MCU | Seeed Studio XIAO nRF52840 Plus（遊舎工房で購入可。基板に直接はんだ付け）。ZMK のボード名は `seeeduino_xiao_ble` |
 | ファームウェア | ZMK |
-| 電源 | LiPo バッテリー 250 mAh（EEMB 502030。充電は XIAO 内蔵回路）。電源スイッチは無く、fn+esc 長押しで ZMK の soft off、キーを押すと復帰 |
+| 電源 | LiPo バッテリー 250 mAh（EEMB 502030。充電は XIAO 内蔵回路）。電源スイッチは無く、fn+esc 長押しで ZMK の soft off、esc を押すと復帰（ほかのキーでは起きない。esc の行のピンだけを復帰元にする、2026-11-26 実機で確認） |
 | その他部品 | 電池の線は基板に直接はんだ付け（JST PH コネクタも付けられる）。リセットボタンと状態ランプ（3 色 LED）は XIAO 上のものを上帯カバーの穴から使う |
 | 基板製造 | JLCPCB（2 層 FR-4、ソルダーレジスト黒、部品実装なし。手半田） |
 | ケース | アルミ 6061 CNC（JLCCNC）、ビーズブラスト + クリアアルマイト（銀）。上帯は樹脂カバー（JLC3DP Black Resin、キーキャップと同じ。厚さ 2 mm。アンテナ窓を兼ねる） |
